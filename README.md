@@ -5,7 +5,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/your-repo.svg)
 ![GitHub license](https://img.shields.io/github/license/your-repo.svg)
 
-> ✨ 一个简短的项目描述，例如：“本项目是基于Springboot+RabbitMQ+docker的超星学习通自动刷课平台”
+> ✨ “本项目是基于Springboot+RabbitMQ+docker的超星学习通自动刷课平台”
 
 ## 🎯 功能特性（Features）
 
