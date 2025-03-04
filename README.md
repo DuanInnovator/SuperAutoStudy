@@ -1,9 +1,12 @@
 # 🌟 项目名称（Super-Auto）
 
-![GitHub stars](https://img.shields.io/github/stars/your-repo.svg)
-![GitHub forks](https://img.shields.io/github/forks/your-repo.svg)
-![GitHub issues](https://img.shields.io/github/issues/your-repo.svg)
-![GitHub license](https://img.shields.io/github/license/your-repo.svg)
+[//]: # (![GitHub stars]&#40;https://github.com/DuanInnovator/SuperAutoStudy/stars.svg&#41;)
+
+[//]: # (![GitHub forks]&#40;https://img.shields.io/github/forks/your-repo.svg&#41;)
+
+[//]: # (![GitHub issues]&#40;https://img.shields.io/github/issues/your-repo.svg&#41;)
+
+[//]: # (![GitHub license]&#40;https://img.shields.io/github/license/your-repo.svg&#41;)
 
 > ✨ 一个简短的项目描述，例如：“本项目是基于Springboot+RabbitMQ+docker的超星学习通自动刷课平台”
 
