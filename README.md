@@ -48,8 +48,9 @@
 
 ## 📸 预览截图（Screenshots）
 
-![img.png](img.png)
 
+
+<img width="1184" alt="屏幕截图 2025-03-03 230311" src="https://github.com/user-attachments/assets/34221485-ea40-40d4-9798-5f4da1fe0677" />
 
 
 
