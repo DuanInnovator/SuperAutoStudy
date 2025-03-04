@@ -8,7 +8,7 @@
 
 [//]: # (![GitHub license]&#40;https://img.shields.io/github/license/your-repo.svg&#41;)
 
-> ✨ 一个简短的项目描述，例如：“本项目是基于Springboot+RabbitMQ+docker的超星学习通自动刷课平台”
+> ✨ “本项目是基于Springboot+RabbitMQ+docker的超星学习通自动刷课平台”
 
 ## 🎯 功能特性（Features）
 
@@ -51,8 +51,9 @@
 
 ## 📸 预览截图（Screenshots）
 
-![img.png](img.png)
 
+
+<img width="1184" alt="屏幕截图 2025-03-03 230311" src="https://github.com/user-attachments/assets/34221485-ea40-40d4-9798-5f4da1fe0677" />
 
 
 
