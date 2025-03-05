@@ -4,6 +4,8 @@ import com.alibaba.dashscope.aigc.generation.GenerationResult;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wk.api.QWen;
 import com.wk.common.*;
 import com.wk.config.GlobalConst;
@@ -34,15 +36,43 @@ import java.util.regex.Pattern;
 @Component
 public class CourseUtil {
 
-
+    private static final Gson gson = new Gson();
     public Map<String, String> cookies;
+    public List<Cookie> cookieList = new ArrayList<>();
     @Autowired
     private SuperStarLogService superStarLogService;
 
 
-
     public void setCookies(String cookies) {
         this.cookies = convertCookieStringToMap(cookies);
+        cookieList = convertCookieStringToList(cookies);
+    }
+
+    public static List<Cookie> convertCookieStringToList(String cookieStr) {
+        List<Cookie> cookies = new ArrayList<>();
+        HttpUrl httpUrl = HttpUrl.parse("chaoxing.com"); // 需要目标网站的 URL
+
+        if (cookieStr == null || cookieStr.isEmpty() ) {
+            return cookies;
+        }
+
+        String[] cookieArray = cookieStr.split(", "); // 逗号+空格分割多个 Cookie
+        for (String cookieEntry : cookieArray) {
+            String[] parts = cookieEntry.split(";");  // 分号分割 Cookie 属性
+            if (parts.length > 0) {
+                String[] keyValue = parts[0].split("=", 2);  // 分割键和值
+                if (keyValue.length == 2) {
+                    Cookie cookie = new Cookie.Builder()
+                            .name(keyValue[0].trim())
+                            .value(keyValue[1].trim())
+                            .domain("chaoxing.com")  // 你可以改成数据库存的域名
+                            .path("/")  // 默认路径
+                            .build();
+                    cookies.add(cookie);
+                }
+            }
+        }
+        return cookies;
     }
 
     public static Map<String, String> convertCookieStringToMap(String cookieStr) {
@@ -104,7 +134,7 @@ public class CourseUtil {
 
             @Override
             public List<Cookie> loadForRequest(HttpUrl url) {
-                return Cookies.useCookies(url);
+                return cookieList;
             }
         });
         // 使用拦截器添加统一请求头
@@ -152,6 +182,7 @@ public class CourseUtil {
      */
     public List<Course> getCourseList() throws IOException {
         OkHttpClient client = initSession(false, false);
+//        OkHttpClient client =new OkHttpClient();
         String url = "https://mooc2-ans.chaoxing.com/mooc2-ans/visit/courselistdata";
 
         FormBody formBody = new FormBody.Builder()
@@ -168,7 +199,10 @@ public class CourseUtil {
                 .headers(Headers.of(getCourseListHeaders()))
                 .build();
 
+
+
         Response response = client.newCall(request).execute();
+
         String respText = response.body().string();
         List<Course> courseList = Decode.decodeCourseList(respText);
 
@@ -191,6 +225,7 @@ public class CourseUtil {
                     .build();
             Response folderResponse = client.newCall(folderRequest).execute();
             String folderText = folderResponse.body().string();
+            System.out.println(folderText);
             courseList.addAll(Decode.decodeCourseList(folderText));
         }
         return courseList;
@@ -301,10 +336,10 @@ public class CourseUtil {
             }
         }
         if (success && respText != null) {
-            //因为学习通后台数据延迟，实际上只需要判断是否播放完成，所以这里直接返回true
-            if (playingTime >= duration) {
-                return true;
-            }
+//            //因为学习通后台数据延迟，实际上只需要判断是否播放完成，所以这里直接返回true
+//            if (playingTime >= duration) {
+//                return true;
+//            }
             return (Boolean) JsonParser.parse(respText).get("isPassed");
         } else {
             //loggerUtil.//logger.error("出现403报错，尝试修复无效，正在跳过当前任务点...");
@@ -317,6 +352,7 @@ public class CourseUtil {
      */
     public void studyVideo(Course course, Job job, JobInfo jobInfo,
                            double speed, String type, SuperStarLog log) throws Exception {
+
         OkHttpClient session = ("Video".equals(type)) ?
                 initSession(true, false) : initSession(false, true);
         // 获取视频信息
@@ -346,6 +382,7 @@ public class CourseUtil {
                 }
 
                 Thread.sleep(60000);
+
                 playingTime += waitTime;
             }
             log.setRemark("任务完成: " + job.getName());
@@ -397,9 +434,7 @@ public class CourseUtil {
     }
 
     public void studyWork(Course course, Job job, JobInfo jobInfo) throws IOException {
-//        if (Tiku.DISABLE || Tiku.instance == null) {
-//            return;
-//        }
+
         OkHttpClient client = initSession(false, false);
         String originHtmlContent = "";
 
@@ -522,7 +557,7 @@ public class CourseUtil {
             ObjectMapper objectMapper = new ObjectMapper();
 
 
-            generationResult=QWen.staticCallWithMessage(objectMapper.writeValueAsString(questions));
+            generationResult = QWen.staticCallWithMessage(objectMapper.writeValueAsString(questions));
 
 
             Map<String, String> answerMap = parseAIResponse(generationResult.getOutput().getChoices().get(0).getMessage().getContent());
