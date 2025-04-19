@@ -1,8 +1,9 @@
-package com.wk.service.superstar;
+package com.tihai.service.superstar;
 
+import com.alibaba.nacos.api.exception.NacosException;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.wk.domain.chaoxing.SuperStarTask;
-import com.wk.dto.CourseSubmitTaskDTO;
+import com.tihai.domain.chaoxing.SuperStarTask;
+import com.tihai.dubbo.dto.CourseSubmitTaskDTO;
 
 import java.io.IOException;
 
@@ -15,11 +16,20 @@ import java.io.IOException;
  **/
 @SuppressWarnings("all")
 public interface SuperStarTaskService extends IService<SuperStarTask> {
+
+
+    /**
+     * 根据账号和课程id查询超星学习任务
+     * @param loginAccount
+     * @param courseId
+     * @return
+     */
+    SuperStarTask getSuperStarTask(String loginAccount, String courseId);
     /**
      * 添加超星学习任务
      * @param courseSubmitTaskDTO
      */
-     void addChaoXingTask(CourseSubmitTaskDTO courseSubmitTaskDTO);
+     void addChaoXingTask(CourseSubmitTaskDTO courseSubmitTaskDTO) throws NacosException;
 
 
     /**
