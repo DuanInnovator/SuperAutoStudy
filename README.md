@@ -8,7 +8,7 @@
 
 [//]: # (![GitHub license]&#40;https://img.shields.io/github/license/your-repo.svg&#41;)
 
-> ✨ “本项目是基于Springboot+RabbitMQ+docker的超星学习通自动刷课平台”
+> ✨ “本项目是基于Springboot+RabbitMQ+docker+Dubbo的超星学习通自动刷课平台”
 
 ## 🎯 功能特性（Features）
 
@@ -34,7 +34,7 @@
 ## 🔥 当前版本功能（Current Features）
 
 📌 **版本号**：v1.0.0  
-📌 **发布日期**：2025-03-03
+📌 **发布日期**：2025-04-19
 
 支持多任务同时运行,目前只支持学习通，也只能完成章节任务，还未集成自动答题考试功能！
 
