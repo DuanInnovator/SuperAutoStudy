@@ -1,6 +1,8 @@
-package com.wk.common;
+package com.tihai.dubbo.pojo.course;
 
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * @Copyright : DuanInnovator
@@ -10,7 +12,7 @@ import lombok.Data;
  * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Data
-public class Course {
+public class Course implements Serializable {
 
     /**
      * id
