@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr:   #Nacos地址
+        namespace:     #命名空间
+        group: DEFAULT_GROUP
+        refresh-enabled: true
+        enabled: true
+        extension-configs[0]:
+          data-id: super-star.yml
+          group: dev
+          refresh: true
+
+  application:
+    name:
+      super-auto
+

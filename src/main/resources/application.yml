@@ -5,7 +5,7 @@ server:
 spring:
 
   profiles:
-    active: prod # 或者 prod
+    active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
