@@ -1,0 +1,17 @@
+custom:
+  thread-pool:
+    core-size: 5
+    max-size: 10
+    keep-alive: 60
+    queue-capacity: 100
+    thread-name-prefix: "priority-pool-"
+    allow-core-thread-timeout: true
+
+study:
+  chaoxing:
+    speed: 3
+
+cors:
+  allow:
+    origins:
+      - "http://localhost:3030"
