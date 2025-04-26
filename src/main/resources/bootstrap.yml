@@ -2,6 +2,7 @@ spring:
   cloud:
     nacos:
       config:
+       enabled: ${enable-service-registry:false} 
         server-addr:   #Nacos地址
         namespace:     #命名空间
         group: DEFAULT_GROUP
