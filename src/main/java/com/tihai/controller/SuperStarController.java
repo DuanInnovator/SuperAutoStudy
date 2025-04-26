@@ -7,6 +7,7 @@ import com.tihai.service.superstar.impl.SuperStarTaskServiceImpl;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 /**
  * @Copyright : DuanInnovator
@@ -32,12 +33,12 @@ public class SuperStarController {
      * @return
      */
     @PostMapping("")
-    public R addChaxingTask(@RequestBody CourseSubmitTaskDTO courseSubmitTaskDTO) {
+    public R addChaxingTask(@RequestBody @Valid CourseSubmitTaskDTO courseSubmitTaskDTO) {
 
         try {
             chaoXingTaskService.addChaoXingTask(courseSubmitTaskDTO);
         } catch (Exception e) {
-            System.out.println(e);
+
             return R.error(BizCodeEnum.TASK_ALREADY_EXIST.getCode(), BizCodeEnum.TASK_ALREADY_EXIST.getMsg());
         }
         return R.ok();
