@@ -1,29 +1,19 @@
 package com.tihai.utils;
 
-import com.alibaba.dashscope.aigc.generation.GenerationResult;
-
-import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.A;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.tihai.api.QWen;
 import com.tihai.common.*;
 import com.tihai.config.GlobalConst;
 import com.tihai.domain.chaoxing.SuperStarLog;
 import com.tihai.domain.chaoxing.WkUser;
 import com.tihai.dubbo.pojo.course.Course;
-import com.tihai.service.nacos.NacosInstanceService;
 import com.tihai.service.superstar.SuperStarCookieService;
 import com.tihai.service.superstar.SuperStarLogService;
 import okhttp3.*;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.net.ssl.*;
@@ -51,7 +42,7 @@ import java.util.stream.Collectors;
 @Component
 public class CourseUtil {
 
-    private static final Gson gson = new Gson();
+
     public Map<String, String> cookies;
     public List<Cookie> cookieList = new ArrayList<>();
 
@@ -64,8 +55,10 @@ public class CourseUtil {
     private SuperStarCookieService cookieService;
 
     @Autowired
-    private NacosInstanceService nacosInstanceService;
+    private ServerInfoUtil serverInfoUtil;
 
+    @Autowired
+    private Query query;
 
     public void setAccount(String account) {
         this.account = account;
@@ -77,25 +70,29 @@ public class CourseUtil {
         cookieList = convertCookieStringToList(cookies);
     }
 
+    /**
+     * 将 Cookie 字符串转换为 Cookie 列表
+     *
+     * @param cookieStr Cookie 字符串
+     * @return Cookie 列表
+     */
     public static List<Cookie> convertCookieStringToList(String cookieStr) {
         List<Cookie> cookies = new ArrayList<>();
-        HttpUrl httpUrl = HttpUrl.parse("chaoxing.com"); // 需要目标网站的 URL
 
         if (cookieStr == null || cookieStr.isEmpty()) {
             return cookies;
         }
-
-        String[] cookieArray = cookieStr.split(", "); // 逗号+空格分割多个 Cookie
+        String[] cookieArray = cookieStr.split(", ");
         for (String cookieEntry : cookieArray) {
-            String[] parts = cookieEntry.split(";");  // 分号分割 Cookie 属性
+            String[] parts = cookieEntry.split(";");
             if (parts.length > 0) {
-                String[] keyValue = parts[0].split("=", 2);  // 分割键和值
+                String[] keyValue = parts[0].split("=", 2);
                 if (keyValue.length == 2) {
                     Cookie cookie = new Cookie.Builder()
                             .name(keyValue[0].trim())
                             .value(keyValue[1].trim())
-                            .domain("chaoxing.com")  // 你可以改成数据库存的域名
-                            .path("/")  // 默认路径
+                            .domain("chaoxing.com")
+                            .path("/")
                             .build();
                     cookies.add(cookie);
                 }
@@ -137,12 +134,20 @@ public class CourseUtil {
     }
 
 
-    // 获取随机等待秒数（30-90秒）
+    /**
+     * 获取随机秒数
+     *
+     * @return 随机秒数
+     */
     public static int getRandomSeconds() {
         return ThreadLocalRandom.current().nextInt(100, 120);
     }
 
-    // 获取时间戳（毫秒）
+    /**
+     * 获取当前时间戳
+     *
+     * @return 时间戳字符串
+     */
     public static String getTimestamp() {
         return String.valueOf(System.currentTimeMillis());
     }
@@ -380,7 +385,11 @@ public class CourseUtil {
         return builder.build();
     }
 
-
+    /**
+     * 获取课程列表请求头
+     *
+     * @return 请求头
+     */
     private Map<String, String> getCourseListHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Host", "mooc2-ans.chaoxing.com");
@@ -406,16 +415,13 @@ public class CourseUtil {
      */
     public List<Course> getCourseList() throws IOException {
         OkHttpClient client = initSession(false, false);
-//        OkHttpClient client =new OkHttpClient();
         String url = "https://mooc2-ans.chaoxing.com/mooc2-ans/visit/courselistdata";
-
         FormBody formBody = new FormBody.Builder()
                 .add("courseType", "1")
                 .add("courseFolderId", "0")
-                .add("query", "")
+                .add("Query", "")
                 .add("superstarClass", "0")
                 .build();
-
         // 此处定义专用的请求头
         Request request = new Request.Builder()
                 .url(url)
@@ -439,7 +445,7 @@ public class CourseUtil {
             FormBody folderForm = new FormBody.Builder()
                     .add("courseType", "1")
                     .add("courseFolderId", folder.getId())
-                    .add("query", "")
+                    .add("Query", "")
                     .add("superstarClass", "0")
                     .build();
             Request folderRequest = new Request.Builder()
@@ -462,13 +468,9 @@ public class CourseUtil {
         OkHttpClient client = initSession(false, false);
         String url = String.format("https://mooc2-ans.chaoxing.com/mooc2-ans/mycourse/studentcourse?courseid=%s&clazzid=%s&cpi=%s&ut=s",
                 courseId, clazzId, cpi);
-//        //loggerUtil.//logger.trace("开始读取课程所有章节...");
-
-
         Request request = new Request.Builder().url(url).addHeader("Cookie", cookieList.toString()).build();
         Response response = client.newCall(request).execute();
         String respText = response.body().string();
-//        //loggerUtil.//logger.info("课程章节读取成功...");
         CoursePoint stringObjectMap = Decode.decodeCoursePoint(respText);
         return Arrays.asList(Decode.decodeCoursePoint(respText));
     }
@@ -484,7 +486,6 @@ public class CourseUtil {
         for (String num : possibleNums) {
             String url = String.format("https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?clazzid=%s&courseid=%s&knowledgeid=%s&num=%s&ut=s&cpi=%s&v=20160407-3&mooc2=1",
                     clazzId, courseId, knowledgeId, num, cpi);
-            //loggerUtil.//logger.trace("开始读取章节所有任务点...");
             Request request = new Request.Builder().url(url).build();
             Response response = client.newCall(request).execute();
             String respText = response.body().string();
@@ -493,13 +494,11 @@ public class CourseUtil {
 
             List<JobInfo> _jobInfo = Arrays.asList(result.getSecond());
             if (Boolean.TRUE.equals(_jobInfo.get(0).getNotOpen())) {
-                //loggerUtil.//logger.info("该章节未开放");
                 return new Pair<>(new ArrayList<>(), _jobInfo);
             }
             jobList.addAll(_jobList);
             jobInfo.addAll(_jobInfo);
         }
-        //loggerUtil.//logger.info("章节任务点读取成功...");
         return new Pair<>(jobList, jobInfo);
     }
 
@@ -545,8 +544,6 @@ public class CourseUtil {
                             playingTime, duration, getValue("_uid")),
                     possibleRt, type, getTimestamp());
             Request request = new Request.Builder().url(url).build();
-//            System.out.println(request);
-
             response = session.newCall(request).execute();
             respText = response.body().string();
             if (response.code() == 200) {
@@ -587,7 +584,7 @@ public class CourseUtil {
             long duration = Long.parseLong(videoInfo.get("duration").toString());
             boolean isFinished = false;
             long playingTime = 0;
-            System.out.println(Thread.currentThread().getName() + "开始学习视频: " + "课程名:"+course.getTitle()+" "+"任务名:"+job.getName());
+            System.out.println(Thread.currentThread().getName() + "开始学习视频: " + "课程名:" + course.getTitle() + " " + "任务名:" + job.getName());
             log.setStartTime(LocalDateTime.now());
             log.setCurrentJob(job.getName());
             while (!isFinished) {
@@ -609,7 +606,7 @@ public class CourseUtil {
             log.setStatus(1);
             log.setRemark("任务完成: " + job.getName());
             log.setEndTime(LocalDateTime.now());
-            log.setMachineNum(nacosInstanceService.getInstanceId());
+            log.setMachineNum(serverInfoUtil.getCurrentServerInstance());
             superStarLogService.saveLog(log);
 
         }
@@ -657,7 +654,15 @@ public class CourseUtil {
         superStarLogService.saveLog(log);
     }
 
-    public void studyWork(Course course, Job job, JobInfo jobInfo) throws IOException {
+    /**
+     * 作业任务
+     *
+     * @param course  课程信息
+     * @param job     任务点信息
+     * @param jobInfo 作业信息
+     * @throws Exception 异常
+     */
+    public void studyWork(Course course, Job job, JobInfo jobInfo, SuperStarLog log) throws Exception {
 
         OkHttpClient client = initSession(false, false);
         String originHtmlContent = "";
@@ -689,135 +694,142 @@ public class CourseUtil {
         Response response = client.newCall(request).execute();
         originHtmlContent = response.body().string();
 
-        // 解析 HTML 获取题目信息
-        List<Question> questions = parseQuestions(originHtmlContent);
+        Map<String, Object> questions = Decode.decodeQuestionsInfo(originHtmlContent);
 
-//        System.out.println(Decode.decodeQuestionsInfo(originHtmlContent));
-
-//        // 发送题目列表给 AI 获取答案
-        Map<Integer, Object> answetMap = sendQuestionsToAI(questions);
-        System.out.println(answetMap);
-        for(Question q:questions){
-            assert answetMap != null;
-            q.setAnswer(answetMap.get(q.getId()).toString());
-        }
-        submitAnswers(questions, client);
+        processAnswers(questions, client, log, job.getTitle());
     }
 
     /**
-     * 解析题目信息
+     * 切割选项
      *
-     * @param html 原始html
+     * @param options 选项
+     * @return 选项信息
      */
-    public static List<Question> parseQuestions(String html) {
-
-
-        List<Question> questions = new ArrayList<>();
-        Document doc = Jsoup.parse(html);
-
-        // 选择所有题目容器
-        Elements questionElements = doc.select("div.TiMu.newTiMu");
-
-        for (Element questionElem : questionElements) {
-            // 获取题目类型
-            Element typeElem = questionElem.selectFirst("span.newZy_TItle");
-            String type = (typeElem != null) ? typeElem.text().replaceAll("[【】]", "").trim() : "未知题型";
-
-            // 获取题干
-            Element titleElem = questionElem.selectFirst("div.font-cxsecret.fontLabel");
-            String fullTitle = (titleElem != null) ? titleElem.text().trim() : "未知题目";
-            String title = fullTitle.replace(typeElem.text(), "").trim(); // 去掉题型部分
-
-            List<String> options = new ArrayList<>();
-            Elements optionElements;
-
-            // 根据题型选择不同的解析方式
-            switch (type) {
-                case "单选题":
-                    optionElements = questionElem.select("li.before-after[role=radio]"); // 单选题
-                    break;
-                case "判断题":
-                    optionElements = questionElem.select("li.before-after[role=radio]"); // 判断题（可能与单选题相同）
-                    break;
-                case "多选题":
-                    optionElements = questionElem.select("li.before-after-checkbox"); // 多选题
-                    break;
-                default:
-                    optionElements = questionElem.select("li"); // 其他类型默认解析
-                    break;
-            }
-
-            for (Element optionElem : optionElements) {
-                String optionLetter = optionElem.selectFirst("span.num_option") != null
-                        ? optionElem.selectFirst("span.num_option").text().trim()
-                        : "";
-
-                String optionText = optionElem.selectFirst("a") != null
-                        ? optionElem.selectFirst("a").text().trim()
-                        : "";
-
-                options.add(optionLetter + ": " + optionText);
-            }
-
-            questions.add(new Question(title, String.join("; ", options), type));
-        }
-
-        return questions;
-    }
-
-
     private static List<String> multiCut(String options) {
-        String[] delimiters = {",", "，", "|", "\n", "\r", "\t", "#", "*", "-", "_", "+", "@", "~", "/", "\\", ".", "&", " "};
-        for (String delimiter : delimiters) {
-            if (options.contains(delimiter)) {
-                return Arrays.asList(options.split(Pattern.quote(delimiter)));
+        if (options == null) return Collections.emptyList();
+
+        return Pattern.compile("\n+")
+                .splitAsStream(options)
+                .filter(s -> !s.trim().isEmpty())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取并处理答案
+     *
+     * @param questions 题目信息
+     */
+    public void processAnswers(Map<String, Object> questions, OkHttpClient client, SuperStarLog log, String jobTitle) throws IOException {
+        // 获取题目列表
+        List<Question> questionList = (List<Question>) questions.get("questions");
+
+        for (Question q : questionList) {
+            String question = q.getTitle();
+            String questionId = q.getId();
+            Integer questionType = q.getType();
+            List<String> options = multiCut(q.getOptions());
+            q.setTKOptions(options);
+            String res = query.queryAnswerSync(q);
+            String answer = ""; //最终答案
+
+            if (res == null || res.isEmpty()) {
+                if (q.getType() == 3) {
+                    answer = "true";  //对于判断题来说,如果题库无答案，则默认选对
+                } else {
+                    answer = randomAnswer(options); //其他题型默认随机选
+                }
+            } else {
+                switch (questionType) {
+                    case 1:// 多选题处理
+                        answer = res;
+
+                        answer = answer.chars()
+                                .sorted()
+                                .mapToObj(c -> String.valueOf((char) c))
+                                .collect(Collectors.joining());
+                        break;
+
+                    case 3: //判断题处理
+
+                        AtomicReference<String> answerRef = new AtomicReference<>("false");
+                        options.forEach(option -> {
+                            if ((option.contains(res) && option.contains("对")) || option.contains("正确")) {
+                                answerRef.set("true");
+                            } else if ((option.contains(res) && option.contains("错")) || option.contains("错误")) {
+                                answerRef.set("false");
+                            }
+                        });
+                        answer = answerRef.get();
+
+                    default: // 单选题处理
+
+                        for (String option : options) {
+                            if (option.contains(res)) {
+                                answer = option.substring(0, 1);
+                                break;
+                            }
+                        }
+                        break;
+                }
+
+                // 如果未能匹配，随机答题
+                if (answer.isEmpty()) {
+                    answer = randomAnswer(options);
+                }
             }
-        }
-        return Arrays.asList("A", "B", "C", "D");
-    }
 
-    // 将题目列表转换为 JSON 并发送到 AI 服务器
-    private static Map<Integer,Object> sendQuestionsToAI(List<Question> questions) {
-        GenerationResult generationResult;
+            AnswerField<String> answerField = q.getAnswerField();
+            answerField.setAnswerValue(answer);
+
+        }
+
+        for (Question q : questionList) {
+            questions.put("answer" + q.getId(), q.getAnswerField().getAnswerValue());
+            questions.put("answertype" + q.getId(), q.getType());
+        }
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-
-            generationResult = QWen.staticCallWithMessage(objectMapper.writeValueAsString(questions));
-
-
-            return parseAIResponse(generationResult.getOutput().getChoices().get(0).getMessage().getContent());
-        } catch (Exception e) {
-
-            System.out.println(e);
-        }
-        return null;
-    }
-
-    // 解析 AI 返回的答案
-    public static Map<Integer, Object> parseAIResponse(String jsonResponse) {
-        try {
-            // 去除可能存在的```json标记和前后空白
-            String cleanJson = jsonResponse.replaceAll("^```json\\s*|\\s*```$", "").trim();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(cleanJson, new TypeReference<Map<Integer, Object>>() {});
-
-        } catch (Exception e) {
-            System.err.println("解析JSON失败: " + e.getMessage());
-            return null;
+            questions.remove("questions");
+            submitAnswers(questions, client, log, jobTitle);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NacosException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void submitAnswers(List<Question> questions, OkHttpClient client) throws IOException {
-        FormBody.Builder formBuilder = new FormBody.Builder();
-        for (Question q : questions) {
-            formBuilder.add("answer" + q.getId(), q.getAnswer());
-        }
 
+    /**
+     * 随机选择一个选项
+     *
+     * @param options 选项
+     * @return 答案
+     */
+    private String randomAnswer(List<String> options) {
+        if (options == null || options.isEmpty()) {
+            return "";
+        }
+        Random random = new Random();
+        int index = random.nextInt(options.size());
+        return options.get(index).substring(0, 1); // 返回选项首字母
+    }
+
+
+    /**
+     * 提交章节测验答案
+     *
+     * @param questions 题目信息
+     * @param client    OkHttpClient
+     * @throws IOException 异常
+     */
+    private void submitAnswers(Map<String, Object> questions, OkHttpClient client, SuperStarLog log, String jobTitle) throws IOException, NacosException {
+        FormBody.Builder formBodyBuilder = new FormBody.Builder(StandardCharsets.UTF_8);
+
+        for (Map.Entry<String, Object> entry : questions.entrySet()) {
+            formBodyBuilder.add(entry.getKey(), entry.getValue().toString());
+        }
         Request request = new Request.Builder()
-                .url("https://mooc1.chaoxing.com/mooc-ans/work/addStudentWorkNewWeb")
-                .post(formBuilder.build())
+                .url("https://mooc1.chaoxing.com/mooc-ans/work/addStudentWorkNewWeb")  //2025/4/26发现学习通提交题目接口已改变
+                .post(formBodyBuilder.build())
                 .header("Host", "mooc1.chaoxing.com")
                 .header("sec-ch-ua-platform", "\"Windows\"")
                 .header("X-Requested-With", "XMLHttpRequest")
@@ -834,8 +846,23 @@ public class CourseUtil {
                 .build();
 
         Response response = client.newCall(request).execute();
-        System.out.println("提交结果: " + request.body().toString());
-        System.out.println("提交结果: " + response.body().toString());
+        ObjectMapper objectMapper = new ObjectMapper();
+        assert response.body() != null;
+        Map<String, Object> responseBody = objectMapper.readValue(response.body().string(), Map.class);
+        if (responseBody.get("status").equals("true") && responseBody.get("msg").equals("success")) {
+            log.setErrorMessage(null);
+            log.setStatus(1);
+            log.setRemark("章节测验完成: " + jobTitle);
+            log.setEndTime(LocalDateTime.now());
+            log.setMachineNum(serverInfoUtil.getCurrentServerInstance());
+            superStarLogService.saveLog(log);
+        } else {
+            log.setErrorMessage("章节测验提交失败" + jobTitle);
+            log.setStatus(5);
+            log.setRemark("章节测验提交失败: " + jobTitle);
+            log.setMachineNum(serverInfoUtil.getCurrentServerInstance());
+            superStarLogService.saveLog(log);
+        }
     }
 
 
