@@ -2,15 +2,18 @@
 
 [//]: # (![GitHub stars]&#40;https://github.com/DuanInnovator/SuperAutoStudy/stars.svg&#41;)
 
+[//]: # ()
 [//]: # (![GitHub forks]&#40;https://img.shields.io/github/forks/your-repo.svg&#41;)
 
+[//]: # ()
 [//]: # (![GitHub issues]&#40;https://img.shields.io/github/issues/your-repo.svg&#41;)
 
+[//]: # ()
 [//]: # (![GitHub license]&#40;https://img.shields.io/github/license/your-repo.svg&#41;)
 
 > ✨ “本项目是基于Springboot+RabbitMQ+docker+Dubbo的超星学习通自动刷课平台”
 ## 📚 文档入口
-- [📖 使用文档](https://doc.xxtmooc.com)
+- [<span style="font-size: 1.5em">📖 使用文档</span>](https://doc.xxtmooc.com)
 
 ## 🎯 功能特性（Features）
 
@@ -28,7 +31,6 @@
 
 (✅ **稳定高效**：使用学习通官方API配合时间欺骗+模拟用户观看,高效完成学习通任务 )
 
-(✅ **安全可靠**： 使用HTTPS协议，数据加密传输，防止数据泄露)
 
 (✅ **多任务**：  使用自定义ThreadPoolExecutor实现多任务)
 
@@ -45,14 +47,14 @@
 
 ## 题库配置
 
-| 参数             | 描述                      | 是否必须 | 示例值                              | Token获取方式                |
-|----------------|-------------------------|------|----------------------------------|--------------------------|
-| use            | 你想要使用哪些题库,不填写默认使用所有免费题库 | 否    | local,icodef,buguake,wanneng             |      |
-| wannengToken   | 万能付费题库的Token值(10位)      | 否    | E196FD8B49                       | https://lyck6.cn/pay     |
-| icodefToken    | Icodef 题库Token值         | 否    | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
-| enncyToken     | enncy 题库Token值          | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
-| aidianYToken   | 爱点题库(亿级题库API)Token值     | 否    | cvor7f3HxZ7nF2M3ljmA             | https://www.51aidian.com |
-| lemonToken     | 柠檬题库 Token值             | 否    | 8a3debe92e2ba83d6786e186bef2a424 | https://www.lemtk.xyz    |
+| 参数             | 描述                      | 是否必须       | 示例值                              | Token获取方式                |
+|----------------|-------------------------|------------|----------------------------------|--------------------------|
+| use            | 你想要使用哪些题库,不填写默认使用所有免费题库 | 否          | local,icodef,buguake,wanneng             |      |
+| wannengToken   | 万能付费题库的Token值(10位)      | 否          | E196FD8B49                       | https://lyck6.cn/pay     |
+| icodefToken    | Icodef 题库Token值         | 否          | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
+| enncyToken     | enncy 题库Token值          | 否          | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
+| aidianYToken   | 爱点题库(亿级题库API)Token值     | 否          | cvor7f3HxZ7nF2M3ljmA             | https://www.51aidian.com |
+| lemonToken     | 柠檬题库 Token值             | 否          | 8a3debe92e2ba83d6786e186bef2a424 | https://www.lemtk.xyz    |
 
 
 ````
