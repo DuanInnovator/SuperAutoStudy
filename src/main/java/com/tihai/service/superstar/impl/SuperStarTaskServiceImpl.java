@@ -12,7 +12,9 @@ import com.tihai.domain.chaoxing.SuperStarTask;
 import com.tihai.domain.chaoxing.WkUser;
 import com.tihai.dubbo.dto.CourseSubmitTaskDTO;
 import com.tihai.dubbo.pojo.course.Course;
+import com.tihai.enums.BizCodeEnum;
 import com.tihai.enums.WkTaskStatusEnum;
+import com.tihai.exception.BusinessException;
 import com.tihai.factory.CustomThreadFactory;
 import com.tihai.factory.PriorityRejectPolicy;
 import com.tihai.manager.RollBackManager;
@@ -26,6 +28,7 @@ import com.tihai.service.superstar.SuperStarLoginService;
 import com.tihai.service.superstar.SuperStarTaskService;
 import com.tihai.service.superstar.SuperStarUserService;
 import com.tihai.utils.CourseUtil;
+import com.tihai.utils.ServerInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 
+
+/**
+ * @Copyright : DuanInnovator
+ * @Description : 超星学习通-任务启动和实现
+ * @Author : DuanInnovator
+ * @CreateTime : 2025/4/26
+ * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ **/
 @Service
 @Slf4j
 public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, SuperStarTask> implements SuperStarTaskService {
@@ -62,8 +73,8 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
     @Autowired
     private RollBackManager rb;
 
-    @Autowired
-    private NacosInstanceService nacosInstanceService;
+   @Autowired
+   private ServerInfoUtil serverInfoUtil;
 
     @Autowired
      private ThreadPoolProperties config;
@@ -197,7 +208,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
                     List<SuperStarLog> toSave = new ArrayList<>(logMap.values());
 
                     if (log != null) {
-                        log.setMachineNum(nacosInstanceService.getInstanceId());
+                        log.setMachineNum(serverInfoUtil.getCurrentServerInstance());
                     }
                     superStarLogService.saveOrUpdateBatch(toSave);
                     logMap.clear();
@@ -236,25 +247,45 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
     }
 
     /**
+     * 根据账号和课程id获取超星学习任务
+     *
+     * @param loginAccount 账号
+     * @param courseName   课程名
+     */
+    @Override
+    public SuperStarTask getSuperStarTaskByCourseName(String loginAccount, String courseName) {
+        LambdaQueryWrapper<SuperStarTask> superStarTaskLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        superStarTaskLambdaQueryWrapper.eq(SuperStarTask::getLoginAccount, loginAccount);
+        superStarTaskLambdaQueryWrapper.eq(SuperStarTask::getCourseName, courseName);
+        return this.getOne(superStarTaskLambdaQueryWrapper);
+    }
+
+    /**
      * 添加任务到等待队列
      *
      * @param courseSubmitTaskDTO 任务信息
      * @throws NacosException nacos异常
      */
     public void addChaoXingTask(CourseSubmitTaskDTO courseSubmitTaskDTO) throws NacosException {
-        SuperStarTask task = getSuperStarTask(courseSubmitTaskDTO.getLoginAccount(), courseSubmitTaskDTO.getCourseId());
+        SuperStarTask task=null;
+        if(courseSubmitTaskDTO.getCourseId()==null){
+            task = getSuperStarTaskByCourseName(courseSubmitTaskDTO.getLoginAccount(), courseSubmitTaskDTO.getCourseName());
+        }else {
+            task = getSuperStarTask(courseSubmitTaskDTO.getLoginAccount(), courseSubmitTaskDTO.getCourseId());
+        }
         if (task == null) {
             SuperStarTask chaoXingTask = mapperFacade.map(courseSubmitTaskDTO, SuperStarTask.class);
             chaoXingTask.setStatus(WkTaskStatusEnum.PENDING.getCode());
             chaoXingTask.setId(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"))); //当前version使用UUID
             chaoXingTask.setPriority(1);
             chaoXingTask.setCreatTime(LocalDateTime.now());
-            chaoXingTask.setMachineNum(nacosInstanceService.getInstanceId());
+            chaoXingTask.setMachineNum(serverInfoUtil.getCurrentServerInstance());
             this.baseMapper.insert(chaoXingTask);
         } else {
-            throw new RuntimeException("超星学习任务已存在");
+            throw new BusinessException(BizCodeEnum.TASK_ALREADY_EXIST.getCode(), BizCodeEnum.TASK_ALREADY_EXIST.getMsg());
         }
-        startChaoxingTask();
+        //TODO 这里似乎不太合理,等待后续优化.......
+//        startChaoxingTask();
     }
 
     /**
@@ -272,7 +303,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
         tasks.forEach(task -> {
             task.setStatus(WkTaskStatusEnum.QUEUE.getCode());
             try {
-                task.setMachineNum(nacosInstanceService.getInstanceId());
+                task.setMachineNum(serverInfoUtil.getCurrentServerInstance());
             } catch (NacosException e) {
                 throw new RuntimeException(e);
             }
@@ -330,11 +361,19 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
         }
 
         try {
+            Course readyCourse=new Course();
             courseUtil.setAccount(task.getLoginAccount());
             courseUtil.setCookies(user.getCookies());
-            Course readyCourse = courseUtil.getCourseList().stream()
-                    .filter(course -> course.getCourseId().equals(task.getCourseId()))
-                    .findFirst().orElse(null);
+            if(task.getCourseId()!=null){
+                readyCourse = courseUtil.getCourseList().stream()
+                        .filter(course -> course.getCourseId().equals(task.getCourseId()))
+                        .findFirst().orElse(null);
+            }else if(task.getCourseName()!=null){
+                readyCourse = courseUtil.getCourseList().stream()
+                        .filter(course -> course.getTitle().equals(task.getCourseName()))
+                        .findFirst().orElse(null);
+            }
+
             if (readyCourse == null) {
                 loginService.login(user,true);
                 log.setStatus(WkTaskStatusEnum.ABNORMAL.getCode());
@@ -424,7 +463,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
                                 courseUtil.studyRead(readyCourse, job, jobInfo.get(0), log);
                                 break;
                             case JobTypeConstant.QUESTION:
-//                                courseUtil.studyWork(readyCourse, job, jobInfo.get(0));
+                                courseUtil.studyWork(readyCourse, job, jobInfo.get(0),log);
                             default:
                                 break;
 

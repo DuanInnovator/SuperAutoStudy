@@ -20,16 +20,28 @@ public interface SuperStarTaskService extends IService<SuperStarTask> {
 
     /**
      * 根据账号和课程id查询超星学习任务
+     *
      * @param loginAccount
      * @param courseId
      * @return
      */
     SuperStarTask getSuperStarTask(String loginAccount, String courseId);
+
+    /**
+     * 根据课程名称查询超星学习任务
+     *
+     * @param loginAccount
+     * @param courseName
+     * @return
+     */
+    SuperStarTask getSuperStarTaskByCourseName(String loginAccount, String courseName);
+
     /**
      * 添加超星学习任务
+     *
      * @param courseSubmitTaskDTO
      */
-     void addChaoXingTask(CourseSubmitTaskDTO courseSubmitTaskDTO) throws NacosException;
+    void addChaoXingTask(CourseSubmitTaskDTO courseSubmitTaskDTO) throws NacosException;
 
 
     /**
@@ -39,6 +51,7 @@ public interface SuperStarTaskService extends IService<SuperStarTask> {
 
     /**
      * 执行超星学习任务
+     *
      * @param task
      */
     void executeCourseTask(SuperStarTask task) throws IOException;
