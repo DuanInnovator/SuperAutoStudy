@@ -4,6 +4,7 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -17,6 +18,7 @@ import java.net.UnknownHostException;
  **/
 @SuppressWarnings("all")
 @Service
+@ConditionalOnProperty(name = "enable-service-registry", havingValue = "true")
 public class NacosInstanceService {
 
     @Autowired
@@ -25,7 +27,7 @@ public class NacosInstanceService {
     @Autowired
     private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-    public String getLocalIp() {
+    public String getServerIp() {
         try {
             return InetAddress.getLocalHost().getHostAddress(); // 获取当前机器的 IP 地址
         } catch (UnknownHostException e) {
@@ -33,7 +35,7 @@ public class NacosInstanceService {
         }
     }
 
-    public int getLocalPort() {
+    public int getServerPort() {
         return nacosDiscoveryProperties.getPort(); // 获取当前服务的端口
     }
 
@@ -43,7 +45,7 @@ public class NacosInstanceService {
      * @throws NacosException
      */
     public String getInstanceId() throws NacosException {
-        return getLocalIp()+":"+getLocalPort();
+        return String.format("%s:%d", getServerIp(), getServerPort());
     }
 }
 
