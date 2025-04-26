@@ -56,7 +56,7 @@ public class SuperStarLog {
     private BigDecimal currentProgress;
 
     /**
-     * 状态
+     * 状态  0-待处理，1-进行中，2-队列中，3-考试中，4-已完成，5-异常
      */
     private Integer status;
 
