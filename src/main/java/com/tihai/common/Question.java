@@ -1,6 +1,10 @@
 package com.tihai.common;
 
 import lombok.Data;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -13,18 +17,34 @@ import lombok.Data;
 @Data
 public class Question {
     private static int count = 0;
-    private final int id;
-    private final String title;
-    private final String options;
-    private final String type;
-    private String answer;
+    private String id;
+    private String title;
+    private String options;
 
-    public Question(String title, String options, String type) {
-        this.id = ++count;
+    private List<String> tKOptions = new ArrayList<>();
+    private Integer type;
+    private String answer;
+    private AnswerField<String> answerField;
+
+    public Question(String qData, String title, String options, Integer type, AnswerField<String> answerField) {
+        this.answerField = answerField;
+        this.id = qData;
         this.title = title;
         this.options = options;
         this.type = type;
         this.answer = "";
     }
+
+    /**
+     * 更新answerField中的值
+     */
+    public void updateAnswerField() {
+        Map<String, Object> fieldMap = new HashMap<>();
+        fieldMap.put(this.answerField.getAnswerKey(), this.answer);
+        fieldMap.put(this.answerField.getAnswerTypeKey(), this.answerField.getAnswerTypeValue());
+        this.answerField.updateFromMap(fieldMap);
+    }
+
+
 }
 
