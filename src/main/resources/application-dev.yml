@@ -33,3 +33,13 @@ cors:
 large:
   model:
     qwen-api-key:  #通义千问api-key
+
+tiku:
+  settings:
+    endpoints:
+        - name:  #示例local,icodef,buguake,wanneng，不填写默认使用所有免费题库
+          token: 
+        - name: 
+          token:
+
+
