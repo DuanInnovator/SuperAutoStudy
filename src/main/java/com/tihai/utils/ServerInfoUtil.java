@@ -65,6 +65,6 @@ public class ServerInfoUtil {
      * 获取完整地址 (http://ip:port)
      */
     private String getServerAddress() {
-        return String.format("http://%s:%d", getServerIp(), getServerPort());
+        return String.format("%s:%d", getServerIp(), getServerPort());
     }
 }
