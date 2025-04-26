@@ -9,6 +9,8 @@
 [//]: # (![GitHub license]&#40;https://img.shields.io/github/license/your-repo.svg&#41;)
 
 > ✨ “本项目是基于Springboot+RabbitMQ+docker+Dubbo的超星学习通自动刷课平台”
+## 📚 文档入口
+- [📖 使用文档](https://doc.xxtmooc.com)
 
 ## 🎯 功能特性（Features）
 
