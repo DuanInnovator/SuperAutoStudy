@@ -1,75 +1,75 @@
-# 🌟 项目名称（Super-Auto）
+🌟 Super-Auto 超星学习通自动刷课平台
 
-[//]: # (![GitHub stars]&#40;https://github.com/DuanInnovator/SuperAutoStudy/stars.svg&#41;)
+![GitHub stars](https://img.shields.io/github/stars/DuanInnovator/SuperAutoStudy?style=social)
+![GitHub forks](https://img.shields.io/github/forks/DuanInnovator/SuperAutoStudy?style=social)
+![GitHub issues](https://img.shields.io/github/issues/DuanInnovator/SuperAutoStudy)
+![GitHub license](https://img.shields.io/github/license/DuanInnovator/SuperAutoStudy)
 
-[//]: # ()
-[//]: # (![GitHub forks]&#40;https://img.shields.io/github/forks/your-repo.svg&#41;)
+> ✨ "基于Springboot+RabbitMQ+docker+Dubbo的超星学习通自动刷课平台"
 
-[//]: # ()
-[//]: # (![GitHub issues]&#40;https://img.shields.io/github/issues/your-repo.svg&#41;)
-
-[//]: # ()
-[//]: # (![GitHub license]&#40;https://img.shields.io/github/license/your-repo.svg&#41;)
-
-> ✨ “本项目是基于Springboot+RabbitMQ+docker+Dubbo的超星学习通自动刷课平台”
-## 📚 文档入口
-- [<span style="font-size: 1.5em">📖 使用文档</span>](https://doc.xxtmooc.com)
+📚 文档入口
+• [📖 使用文档](https://doc.xxtmooc.com) - 详细的使用指南和配置说明
 
 
-欢迎加入SuperAuto交流群: 1033757261
+👥 欢迎加入SuperAuto交流群: [1033757261](https://qm.qq.com/q/1033757261)
 
-## 🎯 功能特性（Features）
+🎯 功能特性
 
-[//]: # (✅ **现代化 UI**：使用 Vue3 + Element Plus 构建，界面简洁美观  )
+✅ 稳定高效：使用学习通官方API配合时间欺骗+模拟用户观看，高效完成学习通任务  
+✅ 多任务处理：使用自定义ThreadPoolExecutor实现多任务并行执行  
+✅ 智能答题：支持多种题库接入，自动完成章节测验  
+✅ Docker支持：一键部署，轻松运行  
+✅ 分布式架构：基于Dubbo的微服务架构，支持水平扩展  
 
-[//]: # (✅ **权限管理**：支持基于角色的权限控制  )
+🔥 当前版本功能 (v1.0.1 | 2025-04-26)
 
-[//]: # (✅ **数据可视化**：集成 ECharts，支持多种图表展示  )
+📌 核心功能：
+• 支持多任务同时运行
 
-[//]: # (✅ **响应式布局**：兼容 PC 和移动端  )
+• 自动完成视频观看、章节测验
 
-[//]: # (✅ **多语言支持**：支持 i18n 国际化  )
-
-[//]: # (✅ **用户友好**：简洁的代码结构，易于维护)
-
-(✅ **稳定高效**：使用学习通官方API配合时间欺骗+模拟用户观看,高效完成学习通任务 )
-
-
-(✅ **多任务**：  使用自定义ThreadPoolExecutor实现多任务)
+• 支持学习通平台全功能
 
 
-## 🔥 当前版本功能（Current Features）
+📌 新增特性：
+• 优化任务调度算法
 
-📌 **版本号**：v1.0.1 
-📌 **发布日期**：2025-04-26
+• 增强稳定性检测机制
 
-支持多任务同时运行,目前只支持学习通,支持自动完成章节测验！！！！！
-
-
+• 修复已知BUG
 
 
-## 题库配置
+💡 题库配置指南
 
 | 参数             | 描述                      | 是否必须       | 示例值                              | Token获取方式                |
 |----------------|-------------------------|------------|----------------------------------|--------------------------|
-| use            | 你想要使用哪些题库,不填写默认使用所有免费题库 | 否          | local,icodef,buguake,wanneng             |      |
-| wannengToken   | 万能付费题库的Token值(10位)      | 否          | E196FD8B49                       | https://lyck6.cn/pay     |
-| icodefToken    | Icodef 题库Token值         | 否          | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
-| enncyToken     | enncy 题库Token值          | 否          | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
-| aidianYToken   | 爱点题库(亿级题库API)Token值     | 否          | cvor7f3HxZ7nF2M3ljmA             | https://www.51aidian.com |
-| lemonToken     | 柠檬题库 Token值             | 否          | 8a3debe92e2ba83d6786e186bef2a424 | https://www.lemtk.xyz    |
+| use            | 使用题库列表(默认所有免费题库) | 否          | local,icodef,buguake,wanneng     | -                        |
+| wannengToken   | 万能付费题库Token(10位)    | 否          | E196FD8B49                       | [获取地址](https://lyck6.cn/pay) |
+| icodefToken    | Icodef题库Token          | 否          | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"获取      |
+| enncyToken     | enncy题库Token           | 否          | a21ae2403b414b94b512736c30c69940 | [官网](https://tk.enncy.cn) |
+| aidianYToken   | 爱点题库Token             | 否          | cvor7f3HxZ7nF2M3ljmA             | [官网](https://www.51aidian.com) |
+| lemonToken     | 柠檬题库Token             | 否          | 8a3debe92e2ba83d6786e186bef2a424 | [官网](https://www.lemtk.xyz) |
 
-
-````
-##application-dev.yml
-
+```yaml
+# application-dev.yml 配置示例
 tiku:
   settings:
     endpoints:
-        - name: "icodef"  #示例local,icodef,buguake,wanneng，不填写默认使用所有免费题库
-          token: xQtsFM16W6KpXCBt
-        - name: "wanneng"
-          token:
+      - name: "icodef"
+        token: "xQtsFM16W6KpXCBt"
+      - name: "wanneng"
+        token: "E196FD8B49"
+```
 
-````
+🐛 问题反馈
 
+🙋‍♂️ 欢迎提出ISSUE！如果您遇到任何问题或有改进建议：
+1. 请先查阅[文档](https://doc.xxtmooc.com)
+2. 在[GitHub Issues](https://github.com/DuanInnovator/SuperAutoStudy/issues)提交问题
+3. 或加入QQ群反馈：1033757261
+
+我们重视每一位用户的反馈！🎉
+
+---
+
+⭐ 如果觉得项目不错，欢迎Star支持！您的支持是我们持续更新的动力~
