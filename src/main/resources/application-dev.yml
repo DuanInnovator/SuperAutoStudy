@@ -16,6 +16,10 @@ spring:
 dubbo:
   application:
     name: dubbo-super-auto
+  config-center:
+    enabled: ${enable-service-registry}
+  metadata-report:
+    enabled: ${enable-service-registry}
   registry:
     enabled: ${enable-service-registry}
     address:   ##Nacos地址  nacos://127.0.0.1:8848
@@ -27,6 +31,15 @@ dubbo:
   consumer:
     timeout: 10000
 
+custom:
+  thread-pool:
+    core-size: 5
+    max-size: 10
+    keep-alive: 60
+    queue-capacity: 100
+    thread-name-prefix: "priority-pool-"
+    allow-core-thread-timeout: true
+  
 cors:
   allow:
     origins:
