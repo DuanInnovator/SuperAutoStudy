@@ -61,6 +61,8 @@ tiku:
         token: "E196FD8B49"
 ```
 
+
+![GitHub stars](https://api.star-history.com/svg?repos=DuanInnovator/SuperAutoStudy&type=Date)
 🐛 问题反馈
 
 🙋‍♂️ 欢迎提出ISSUE！如果您遇到任何问题或有改进建议：
