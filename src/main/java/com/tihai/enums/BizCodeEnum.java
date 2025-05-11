@@ -17,7 +17,11 @@ public enum BizCodeEnum {
    ACCOUNT_OR_PASSWORD_ERROR(10001, "账号或密码错误"),
 
 
-   TASK_ALREADY_EXIST(20001, "任务已存在");
+   TASK_ALREADY_EXIST(20001, "任务已存在"),
+
+    SYSTEM_ERROR(102, "系统异常"),
+    METHOD_ARGUMENT_NOT_VALID_CODE(111, "参数非法");
+
 
     private Integer code;
     private String msg;
