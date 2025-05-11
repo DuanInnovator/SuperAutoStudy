@@ -3,7 +3,7 @@ package com.tihai.utils;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tihai.common.*;
-import com.tihai.config.GlobalConst;
+import com.tihai.common.GlobalConst;
 import com.tihai.domain.chaoxing.SuperStarLog;
 import com.tihai.domain.chaoxing.WkUser;
 import com.tihai.dubbo.pojo.course.Course;
