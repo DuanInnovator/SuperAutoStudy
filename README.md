@@ -11,7 +11,7 @@
 • [📖 使用文档](https://doc.xxtmooc.com) - 详细的使用指南和配置说明
 
 
-👥 欢迎加入SuperAuto交流群: [1033757261](https://qm.qq.com/q/1033757261)
+
 
 🎯 功能特性
 
