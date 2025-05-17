@@ -260,83 +260,82 @@ public class Decode {
      */
     //TODO 待优化
     public static Map<String, Object> decodeQuestionsInfo(String htmlContent) throws Exception {
-//        Document doc = Jsoup.parse(htmlContent);
-//        Map<String, Object> formData = new HashMap<>();
-//        Element formTag = doc.selectFirst("form");
-//        if (formTag == null) {
-//            return formData;
-//        }
-//        // 初始化字体解码器
-//        FontDecoder fd = new FontDecoder(htmlContent);
-//
-//        // 提取表单中非答题 input 元素
-//        Elements inputs = formTag.select("input");
-//        for (Element input : inputs) {
-//            if (!input.hasAttr("name") || input.attr("name").contains("answer")) {
-//                continue;
-//            }
-//            formData.put(input.attr("name"), input.attr("value"));
-//        }
-//
-//        // 初始化题目列表
-//        List<Map<String, Object>> questions = new ArrayList<>();
-//        Elements quesDivs = formTag.select("div.singleQuesId");
-//        for (Element divTag : quesDivs) {
-//            String qData = divTag.attr("data");
-//            // 题目标题（经过字体解码与换行替换）
-//            String rawTitle = divTag.selectFirst("div.Zy_TItle").text();
-//            String qTitle = replaceRtn(fd.decode(rawTitle));
-//            // 题目选项
-//            StringBuilder qOptionsSb = new StringBuilder();
-//            Elements liTags = divTag.select("ul li");
-//            for (Element li : liTags) {
-//                qOptionsSb.append(replaceRtn(fd.decode(li.text()))).append("\n");
-//            }
-//            String qOptions = qOptionsSb.toString().trim(); // 去除尾部换行
-//
-//            // 根据 TiMu 中 data 属性判断题型
-//            Element tiMu = divTag.selectFirst("div.TiMu");
-//            String qTypeCode = tiMu.attr("data");
-//            String qType;
-//            switch (qTypeCode) {
-//                case "0":
-//                    qType = "single";
-//                    break;
-//                case "1":
-//                    qType = "multiple";
-//                    break;
-//                case "2":
-//                    qType = "completion";
-//                    break;
-//                case "3":
-//                    qType = "judgement";
-//                    break;
-//                default:
-//                    LoggerUtil.logger.info("未知题型代码 -> " + qTypeCode);
-//                    qType = "unknown";
-//                    break;
-//            }
-//            Map<String, Object> question = new HashMap<>();
-//            question.put("id", qData);
-//            question.put("title", qTitle);
-//            question.put("options", qOptions);
-//            question.put("type", qType);
-//            Map<String, Object> answerField = new HashMap<>();
-//            answerField.put("answer" + qData, "");
-//            answerField.put("answertype" + qData, qTypeCode);
-//            question.put("answerField", answerField);
-//            questions.add(question);
-//        }
-//        formData.put("questions", questions);
-//
-//        // 拼接 answerwqbid 字段：所有题目 id 用逗号隔开，末尾多一个逗号
-//        StringBuilder answerwqbidSb = new StringBuilder();
-//        for (Map<String, Object> q : questions) {
-//            answerwqbidSb.append(q.get("id")).append(",");
-//        }
-//        formData.put("answerwqbid", answerwqbidSb.toString());
-//        return formData;
-    return null;
+        Document doc = Jsoup.parse(htmlContent);
+        Map<String, Object> formData = new HashMap<>();
+        Element formTag = doc.selectFirst("form");
+        if (formTag == null) {
+            return formData;
+        }
+        // 初始化字体解码器
+        FontDecoder fd = new FontDecoder(htmlContent);
+
+        // 提取表单中非答题 input 元素
+        Elements inputs = formTag.select("input");
+        for (Element input : inputs) {
+            if (!input.hasAttr("name") || input.attr("name").contains("answer")) {
+                continue;
+            }
+            formData.put(input.attr("name"), input.attr("value"));
+        }
+
+        // 初始化题目列表
+        List<Map<String, Object>> questions = new ArrayList<>();
+        Elements quesDivs = formTag.select("div.singleQuesId");
+        for (Element divTag : quesDivs) {
+            String qData = divTag.attr("data");
+            // 题目标题（经过字体解码与换行替换）
+            String rawTitle = divTag.selectFirst("div.Zy_TItle").text();
+            String qTitle = replaceRtn(fd.decode(rawTitle));
+            // 题目选项
+            StringBuilder qOptionsSb = new StringBuilder();
+            Elements liTags = divTag.select("ul li");
+            for (Element li : liTags) {
+                qOptionsSb.append(replaceRtn(fd.decode(li.text()))).append("\n");
+            }
+            String qOptions = qOptionsSb.toString().trim(); // 去除尾部换行
+
+            // 根据 TiMu 中 data 属性判断题型
+            Element tiMu = divTag.selectFirst("div.TiMu");
+            String qTypeCode = tiMu.attr("data");
+            String qType;
+            switch (qTypeCode) {
+                case "0":
+                    qType = "single";
+                    break;
+                case "1":
+                    qType = "multiple";
+                    break;
+                case "2":
+                    qType = "completion";
+                    break;
+                case "3":
+                    qType = "judgement";
+                    break;
+                default:
+                    qType = "unknown";
+                    break;
+            }
+            Map<String, Object> question = new HashMap<>();
+            question.put("id", qData);
+            question.put("title", qTitle);
+            question.put("options", qOptions);
+            question.put("type", qType);
+            Map<String, Object> answerField = new HashMap<>();
+            answerField.put("answer" + qData, "");
+            answerField.put("answertype" + qData, qTypeCode);
+            question.put("answerField", answerField);
+            questions.add(question);
+        }
+        formData.put("questions", questions);
+
+        // 拼接 answerwqbid 字段：所有题目 id 用逗号隔开，末尾多一个逗号
+        StringBuilder answerwqbidSb = new StringBuilder();
+        for (Map<String, Object> q : questions) {
+            answerwqbidSb.append(q.get("id")).append(",");
+        }
+        formData.put("answerwqbid", answerwqbidSb.toString());
+        return formData;
+
     }
 
     /**
