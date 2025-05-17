@@ -1,0 +1,5 @@
+src/main/resources/application.yml merge=ours
+src/main/resources/application-dev.yml merge=ours
+src/main/resources/application-prod.yml merge=ours
+src/main/resources/bootstrap.yml merge=ours
+src/main/resources/super-star.yml merge=ours
