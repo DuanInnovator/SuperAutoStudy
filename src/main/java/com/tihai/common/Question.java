@@ -1,6 +1,8 @@
 package com.tihai.common;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Map;
  * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Data
+@NoArgsConstructor
 public class Question {
     private static int count = 0;
     private String id;
@@ -22,11 +25,11 @@ public class Question {
     private String options;
 
     private List<String> tKOptions = new ArrayList<>();
-    private Integer type;
+    private String type;
     private String answer;
     private AnswerField<String> answerField;
 
-    public Question(String qData, String title, String options, Integer type, AnswerField<String> answerField) {
+    public Question(String qData, String title, String options, String type, AnswerField<String> answerField) {
         this.answerField = answerField;
         this.id = qData;
         this.title = title;
