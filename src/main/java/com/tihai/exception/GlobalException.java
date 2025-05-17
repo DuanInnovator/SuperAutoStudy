@@ -4,8 +4,6 @@ package com.tihai.exception;
 import com.tihai.common.R;
 import com.tihai.enums.BizCodeEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
