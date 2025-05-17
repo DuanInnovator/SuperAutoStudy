@@ -1,0 +1,35 @@
+# src/main/resources/application.yml
+server:
+  port: 3030
+
+spring:
+
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      max-lifetime: 600000
+
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+super-star:
+  aesKey: u2oh6Vu^HWe4_AES
+  threShold: 3
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+    Sec-Ch-Ua: "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\""
+  videoHeaders:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+    Referer: "https://mooc1.chaoxing.com/ananas/modules/video/index.html?v=2023-1110-1610"
+    Host: "mooc1.chaoxing.com"
+  audioHeaders:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+    Referer: "https://mooc1.chaoxing.com/ananas/modules/audio/index_new.html?v=2023-0428-1705"
+    Host: "mooc1.chaoxing.com"
