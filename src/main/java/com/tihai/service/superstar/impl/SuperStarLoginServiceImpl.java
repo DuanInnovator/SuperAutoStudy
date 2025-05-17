@@ -1,6 +1,5 @@
 package com.tihai.service.superstar.impl;
 
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tihai.constant.GlobalConstant;
 import com.tihai.domain.chaoxing.SuperStarLog;
@@ -42,7 +41,7 @@ public class SuperStarLoginServiceImpl extends ServiceImpl<SuperStarUserMapper, 
 
     @Autowired
     private SuperStarLogService superStarLogService;
-    
+
     @Autowired
     private SuperStarUserService userService;
     @Autowired
