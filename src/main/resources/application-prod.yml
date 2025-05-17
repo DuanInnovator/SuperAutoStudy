@@ -1,15 +1,15 @@
 enable-service-registry: false   #k控制Nacos注册配置,Dubbo注册
 spring:
   datasource:
-    url: jdbc:mysql://www.xxtmooc.com:3306/tihai?serverTimezone=Asia/Shanghai
-    username: root
-    password: dc515141b3db4599
+    url: 
+    username:
+    password: 
   cloud:
     nacos:
       discovery:
         enabled: ${enable-service-registry}
-        server-addr: nacos.xxtmooc.com:8848/nacos
-        namespace: 6bc0fc78-bcce-408f-94ca-0b18e16212af
+        server-addr: 
+        namespace: 
         register-enabled: ${enable-service-registry}
   application:
     name: super-auto
@@ -23,7 +23,7 @@ dubbo:
     enabled: ${enable-service-registry}
   registry:
     register: ${enable-service-registry}
-    address: nacos://nacos.xxtmooc.com:8848
+    address: 
   protocol:
     name: dubbo
     port: 20880
@@ -36,7 +36,6 @@ cors:
   allow:
     origins:
       - "http://localhost:3030"  #允许跨域的域名
-      - "http://www.xtmooc.com"
 
 
 custom:
