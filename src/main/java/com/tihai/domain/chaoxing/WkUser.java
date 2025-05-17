@@ -18,17 +18,25 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("th_wk_user")
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("th_wk_user")
 public class WkUser {
+
+    /**
+     * 主键
+     */
+    @TableId(value = "id")
+    private Long id;
 
     /**
      * 账号
      */
-    @TableId(value = "account")
     private String account;
 
+    /**
+     * 密码
+     */
     private String password;
 
     /**
@@ -50,5 +58,10 @@ public class WkUser {
      * cookie信息
      */
     private String cookies;
+
+    public WkUser(String account, String password) {
+        this.account = account;
+        this.password = password;
+    }
 }
 
