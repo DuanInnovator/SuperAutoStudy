@@ -1,6 +1,8 @@
 package com.tihai.common;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Map;
 
 /**
@@ -11,6 +13,7 @@ import java.util.Map;
  * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
  **/
 @Data
+@NoArgsConstructor
 public class AnswerField<T> {
     private String answerKey;
     private T answerValue;
