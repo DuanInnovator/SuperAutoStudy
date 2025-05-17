@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.net.ssl.*;
@@ -385,6 +384,7 @@ public class CourseUtil {
         return builder.build();
     }
 
+
     /**
      * 获取课程列表请求头
      *
@@ -721,26 +721,49 @@ public class CourseUtil {
      */
     public void processAnswers(Map<String, Object> questions, OkHttpClient client, SuperStarLog log, String jobTitle) throws IOException {
         // 获取题目列表
-        List<Question> questionList = (List<Question>) questions.get("questions");
+        List<Question> questionList = new ArrayList<>();
+        List<Object> questions1 = (List<Object>) questions.get("questions");
+        for (Object question : questions1) {
+            if (question instanceof Map) {
+                Map<String, Object> questionMap = (Map<String, Object>) question;
+                Map<String, Object> answerField = (Map<String, Object>) questionMap.get("answerField");
+                String title = (String) questionMap.get("title");
+                String options = (String) questionMap.get("options");
+                String id = (String) questionMap.get("id");
+                String type = (String) questionMap.get("type");
+                AnswerField<String> readAnswerField = new AnswerField<>();
+                readAnswerField.updateFromMap(answerField);
+                Question q = new Question(id, title, options, type, readAnswerField);
+                questionList.add(q);
+            }
+        }
 
         for (Question q : questionList) {
-            String question = q.getTitle();
-            String questionId = q.getId();
-            Integer questionType = q.getType();
+
+            String questionType = q.getType();
             List<String> options = multiCut(q.getOptions());
             q.setTKOptions(options);
             String res = query.queryAnswerSync(q);
             String answer = ""; //最终答案
 
             if (res == null || res.isEmpty()) {
-                if (q.getType() == 3) {
+                if (questionType.equals("judgement")) {
                     answer = "true";  //对于判断题来说,如果题库无答案，则默认选对
                 } else {
                     answer = randomAnswer(options); //其他题型默认随机选
                 }
             } else {
                 switch (questionType) {
-                    case 1:// 多选题处理
+
+                    case "single":
+                        for (String option : options) {
+                            if (option.contains(res)) {
+                                answer = option.substring(0, 1);
+                                break;
+                            }
+                        }
+                        break;
+                    case "multiple":
                         answer = res;
 
                         answer = answer.chars()
@@ -749,33 +772,15 @@ public class CourseUtil {
                                 .collect(Collectors.joining());
                         break;
 
-                    case 3: //判断题处理
-
-                        AtomicReference<String> answerRef = new AtomicReference<>("false");
-                        options.forEach(option -> {
-                            if ((option.contains(res) && option.contains("对")) || option.contains("正确")) {
-                                answerRef.set("true");
-                            } else if ((option.contains(res) && option.contains("错")) || option.contains("错误")) {
-                                answerRef.set("false");
-                            }
-                        });
-                        answer = answerRef.get();
-
-                    default: // 单选题处理
-
-                        for (String option : options) {
-                            if (option.contains(res)) {
-                                answer = option.substring(0, 1);
-                                break;
-                            }
+                    case "judgement":
+                        if (res.equals("正确")) {
+                            answer = "true";
+                        } else {
+                            answer = "false";
                         }
-                        break;
+                    default:
                 }
 
-                // 如果未能匹配，随机答题
-                if (answer.isEmpty()) {
-                    answer = randomAnswer(options);
-                }
             }
 
             AnswerField<String> answerField = q.getAnswerField();
@@ -785,7 +790,27 @@ public class CourseUtil {
 
         for (Question q : questionList) {
             questions.put("answer" + q.getId(), q.getAnswerField().getAnswerValue());
-            questions.put("answertype" + q.getId(), q.getType());
+            String type = q.getType();
+            String reaType = "0";
+            switch (type) {
+                case "single":
+                    reaType = "0";
+                    break;
+                case "multiple":
+                    reaType = "1";
+                    break;
+                case "fill":
+                    reaType = "2";
+                    break;
+                case "judgement":
+                    reaType = "3";
+                    break;
+                case "short":
+                    reaType = "4";
+                    break;
+
+            }
+            questions.put("answertype" + q.getId(), reaType);
         }
         try {
             questions.remove("questions");
