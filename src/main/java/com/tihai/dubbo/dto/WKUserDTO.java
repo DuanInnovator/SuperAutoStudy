@@ -1,5 +1,6 @@
 package com.tihai.dubbo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @Link : <a href="https://github.com/DuanInnovator/SuperAutoStudy">...</a>
  **/
 @Data
+@AllArgsConstructor
 public class WKUserDTO implements Serializable {
 
     /**
