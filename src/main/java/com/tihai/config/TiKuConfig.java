@@ -21,7 +21,7 @@ import java.util.List;
 public class TiKuConfig {
 
     private List<Endpoint> endpoints=new ArrayList<>();
-    private String baseUrl = "http://localhost:8060/adapter-service/search";
+    private String baseUrl = "http://tk.xxtmooc.com/api/q";
 
     @Data
     public static class Endpoint {
