@@ -22,7 +22,6 @@ import com.tihai.mapper.SuperStarMapper;
 import com.tihai.properties.StudyProperties;
 import com.tihai.properties.ThreadPoolProperties;
 import com.tihai.queue.PriorityTaskWrapper;
-import com.tihai.service.nacos.NacosInstanceService;
 import com.tihai.service.superstar.SuperStarLogService;
 import com.tihai.service.superstar.SuperStarLoginService;
 import com.tihai.service.superstar.SuperStarTaskService;
@@ -31,8 +30,10 @@ import com.tihai.utils.CourseUtil;
 import com.tihai.utils.ServerInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -73,11 +74,11 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
     @Autowired
     private RollBackManager rb;
 
-   @Autowired
-   private ServerInfoUtil serverInfoUtil;
+    @Autowired
+    private ServerInfoUtil serverInfoUtil;
 
     @Autowired
-     private ThreadPoolProperties config;
+    private ThreadPoolProperties config;
 
     @Autowired
     private StudyProperties studyProperties;
@@ -165,6 +166,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
             }
         });
     }
+
     public void restartThreadPoolAndTasks() {
         synchronized (shutdownLock) {
             if (!taskExecutor.isShutdown()) {
@@ -267,10 +269,10 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
      * @throws NacosException nacos异常
      */
     public void addChaoXingTask(CourseSubmitTaskDTO courseSubmitTaskDTO) throws NacosException {
-        SuperStarTask task=null;
-        if(courseSubmitTaskDTO.getCourseId()==null){
+        SuperStarTask task = null;
+        if (courseSubmitTaskDTO.getCourseId() == null) {
             task = getSuperStarTaskByCourseName(courseSubmitTaskDTO.getLoginAccount(), courseSubmitTaskDTO.getCourseName());
-        }else {
+        } else {
             task = getSuperStarTask(courseSubmitTaskDTO.getLoginAccount(), courseSubmitTaskDTO.getCourseId());
         }
         if (task == null) {
@@ -285,7 +287,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
             throw new BusinessException(BizCodeEnum.TASK_ALREADY_EXIST.getCode(), BizCodeEnum.TASK_ALREADY_EXIST.getMsg());
         }
         //TODO 这里似乎不太合理,等待后续优化.......
-//        startChaoxingTask();
+        startChaoxingTask();
     }
 
     /**
@@ -337,7 +339,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
 
         if (log == null) {
             log = createNewLog(task);
-        }else{
+        } else {
             log.setStartTime(LocalDateTime.now());
         }
 
@@ -361,21 +363,32 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
         }
 
         try {
-            Course readyCourse=new Course();
+            Course readyCourse = new Course();
             courseUtil.setAccount(task.getLoginAccount());
             courseUtil.setCookies(user.getCookies());
-            if(task.getCourseId()!=null){
+            if (task.getCourseId() != null) {
                 readyCourse = courseUtil.getCourseList().stream()
                         .filter(course -> course.getCourseId().equals(task.getCourseId()))
                         .findFirst().orElse(null);
-            }else if(task.getCourseName()!=null){
-                readyCourse = courseUtil.getCourseList().stream()
-                        .filter(course -> course.getTitle().equals(task.getCourseName()))
-                        .findFirst().orElse(null);
+            } else if (task.getCourseName() != null) {
+                List<Course> courseList = courseUtil.getCourseList();
+                 readyCourse = Optional.ofNullable(courseList)
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .filter(course -> course != null && task != null)
+                        .filter(course -> {
+                            // 标准化处理
+                            String dbTitle = StringUtils.normalizeSpace(course.getTitle());
+                            String taskName = StringUtils.normalizeSpace(task.getCourseName());
+
+                            return dbTitle.equalsIgnoreCase(taskName);
+                        })
+                        .findFirst()
+                        .orElse(null);
             }
 
             if (readyCourse == null) {
-                loginService.login(user,true);
+                loginService.login(user, true);
                 log.setStatus(WkTaskStatusEnum.ABNORMAL.getCode());
                 log.setErrorMessage(GlobalConstant.COURSE_INFO_GET_FAIL);
                 logQueue.offer(log);
@@ -402,15 +415,12 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
         }
 
         int pointIndex = log.getCurrentChapterIndex() != null ? log.getCurrentChapterIndex() : 0;
-//        System.out.println("当前章节索引：" + pointIndex);
+
         List<ChapterPoint> chapterPointList = pointList.get(0).getPoints();
-//        System.out.println(chapterPointList.size());
+
 
         while (pointIndex < chapterPointList.size()) {
-//            System.out.println("当前线程状态"+Thread.currentThread().isInterrupted());
-//            if (Thread.currentThread().isInterrupted()) { //线程暂停
-//                break;
-//            }
+
             try {
                 log.setCurrentChapterIndex(pointIndex);
                 ChapterPoint chapterPoint = chapterPointList.get(pointIndex);
@@ -419,13 +429,11 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
                         readyCourse.getCourseId(),
                         readyCourse.getCpi(),
                         chapterPoint.getId());
-//                System.out.println("当前章节作业数量：" + result.toString());
 
                 List<Job> jobs = result.getFirst();
                 List<JobInfo> jobInfo = result.getSecond();
 
                 if (jobs.isEmpty()) {
-//                    System.out.println("当前章节没有作业");
                     pointIndex++;
                     continue;
                 }
@@ -463,7 +471,7 @@ public class SuperStarTaskServiceImpl extends ServiceImpl<SuperStarMapper, Super
                                 courseUtil.studyRead(readyCourse, job, jobInfo.get(0), log);
                                 break;
                             case JobTypeConstant.QUESTION:
-                                courseUtil.studyWork(readyCourse, job, jobInfo.get(0),log);
+                                courseUtil.studyWork(readyCourse, job, jobInfo.get(0), log);
                             default:
                                 break;
 
