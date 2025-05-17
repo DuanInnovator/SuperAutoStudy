@@ -89,3 +89,7 @@ docker-compose up -d
 使用者应自觉遵守学校/机构的学术规范
 开发者不对因滥用本软件导致的后果负责
 请合理使用，切勿影响正常教学秩序。
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
