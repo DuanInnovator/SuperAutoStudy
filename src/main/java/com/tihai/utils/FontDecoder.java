@@ -202,13 +202,5 @@ public class FontDecoder {
         return decrypt(this.fontMap, target);
     }
 
-    public static void main(String[] args) throws IOException {
 
-        String htmlFilePath = "D:\\Develop\\project\\test\\font-2\\src\\main\\java\\com\\example\\font2\\demo\\test.html";
-        String htmlContent = readHtmlFile(htmlFilePath);
-
-        FontDecoder decoder = new FontDecoder(htmlContent);
-
-
-    }
 }
