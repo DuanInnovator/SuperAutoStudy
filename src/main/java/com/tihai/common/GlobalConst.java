@@ -1,4 +1,4 @@
-package com.tihai.config;
+package com.tihai.common;
 
 import java.util.Collections;
 import java.util.Map;
