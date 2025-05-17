@@ -11,7 +11,6 @@
 • [📖 使用文档](https://doc.xxtmooc.com) - 详细的使用指南和配置说明
 
 
-👥 欢迎加入SuperAuto交流群: [1033757261](https://qm.qq.com/q/1033757261)
 
 🎯 功能特性
 
@@ -61,6 +60,8 @@ tiku:
         token: "E196FD8B49"
 ```
 
+
+![GitHub stars](https://api.star-history.com/svg?repos=DuanInnovator/SuperAutoStudy&type=Date)
 🐛 问题反馈
 
 🙋‍♂️ 欢迎提出ISSUE！如果您遇到任何问题或有改进建议：
