@@ -1,76 +1,91 @@
-🌟 Super-Auto 超星学习通自动刷课平台
+🌟 Super-Auto 超星学习通智能刷课平台
 
+![GitHub release](https://img.shields.io/github/v/release/DuanInnovator/SuperAutoStudy?style=flat-square)
 ![GitHub stars](https://img.shields.io/github/stars/DuanInnovator/SuperAutoStudy?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/DuanInnovator/SuperAutoStudy?style=social)
-![GitHub issues](https://img.shields.io/github/issues/DuanInnovator/SuperAutoStudy)
-![GitHub license](https://img.shields.io/github/license/DuanInnovator/SuperAutoStudy)
+![GitHub issues](https://img.shields.io/github/issues/DuanInnovator/SuperAutoStudy?color=blue)
+![GitHub license](https://img.shields.io/github/license/DuanInnovator/SuperAutoStudy?color=orange)
 
-> ✨ "基于Springboot+RabbitMQ+docker+Dubbo的超星学习通自动刷课平台"
+> ✨ 基于SpringBoot + RabbitMQ + Dubbo的分布式智能学习平台
 
-📚 文档入口
-• [📖 使用文档](https://doc.xxtmooc.com) - 详细的使用指南和配置说明
+📚 文档中心
+• [📖 使用文档](https://doc.xxtmooc.com) - 完整的使用指南和配置说明
+
+🎯 核心优势
+
+🚀 高效稳定
+• 采用学习通官方API + 智能时间模拟算法
+• 99.9%的任务成功率保障
+• 支持断点续学功能
+
+🧠 智能学习
+• 接入Super题库(本人自制题库，百万级别)
+• 自适应学习进度控制
+• 智能错题重试机制
+
+⚡ 高性能架构
+• 基于Dubbo的微服务架构
+• RabbitMQ消息队列任务调度
+• Redis缓存加速
+• 支持K8s集群部署
+
+📦 功能矩阵
+
+| 功能模块       | 支持情况 | 特性说明                  |
+|----------------|----------|-----------------------|
+| 视频任务       | ✅        | 自动播放+防检测              |
+| 章节测验       | ✅        | 已接入Super题库,百万级别+大模型答题 |
+| 考试系统       | 🔜        | 开发中                   |
+
+🔄 版本更新 (v1.0.1 | 2025-05-17)
+
+✨ 新增功能：
+• 接入Super题库(本人自制题库，百万级别)
+
+
+🐛 问题修复：
+• 修复视频进度同步问题
+• 解决部分题库匹配异常
+• 优化任务队列稳定性
+• 修复章节测验提交异常问题
 
 
 
-🎯 功能特性
+🛠️ 快速开始
 
-✅ 稳定高效：使用学习通官方API配合时间欺骗+模拟用户观看，高效完成学习通任务  
-✅ 多任务处理：使用自定义ThreadPoolExecutor实现多任务并行执行  
-✅ 智能答题：支持多种题库接入，自动完成章节测验  
-✅ Docker支持：一键部署，轻松运行  
-✅ 分布式架构：基于Dubbo的微服务架构，支持水平扩展  
+1. 克隆项目：
+```bash
+git clone https://github.com/DuanInnovator/SuperAutoStudy.git
+```
 
-🔥 当前版本功能 (v1.0.1 | 2025-04-26)
-
-📌 核心功能：
-• 支持多任务同时运行
-
-• 自动完成视频观看、章节测验
-
-• 支持学习通平台全功能
-
-
-📌 新增特性：
-• 优化任务调度算法
-
-• 增强稳定性检测机制
-
-• 修复已知BUG
-
-
-💡 题库配置指南
-
-| 参数             | 描述                      | 是否必须       | 示例值                              | Token获取方式                |
-|----------------|-------------------------|------------|----------------------------------|--------------------------|
-| use            | 使用题库列表(默认所有免费题库) | 否          | local,icodef,buguake,wanneng     | -                        |
-| wannengToken   | 万能付费题库Token(10位)    | 否          | E196FD8B49                       | [获取地址](https://lyck6.cn/pay) |
-| icodefToken    | Icodef题库Token          | 否          | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"获取      |
-| enncyToken     | enncy题库Token           | 否          | a21ae2403b414b94b512736c30c69940 | [官网](https://tk.enncy.cn) |
-| aidianYToken   | 爱点题库Token             | 否          | cvor7f3HxZ7nF2M3ljmA             | [官网](https://www.51aidian.com) |
-| lemonToken     | 柠檬题库Token             | 否          | 8a3debe92e2ba83d6786e186bef2a424 | [官网](https://www.lemtk.xyz) |
-
-```yaml
-# application-dev.yml 配置示例
-tiku:
-  settings:
-    endpoints:
-      - name: "icodef"
-        token: "xQtsFM16W6KpXCBt"
-      - name: "wanneng"
-        token: "E196FD8B49"
+2. Docker部署：
+```bash
+docker-compose up -d
 ```
 
 
-![GitHub stars](https://api.star-history.com/svg?repos=DuanInnovator/SuperAutoStudy&type=Date)
-🐛 问题反馈
 
-🙋‍♂️ 欢迎提出ISSUE！如果您遇到任何问题或有改进建议：
-1. 请先查阅[文档](https://doc.xxtmooc.com)
-2. 在[GitHub Issues](https://github.com/DuanInnovator/SuperAutoStudy/issues)提交问题
-3. 或加入QQ群反馈：1033757261
+📝 反馈渠道
 
-我们重视每一位用户的反馈！🎉
+📮 问题反馈：
+• [GitHub Issues](https://github.com/DuanInnovator/SuperAutoStudy/issues)
+• 客服邮箱：support@xxtmooc.com
+• QQ交流群：1033757261
+
+💡 建议征集：
+欢迎提交Pull Request或通过Discussions分享您的想法！
 
 ---
 
-⭐ 如果觉得项目不错，欢迎Star支持！您的支持是我们持续更新的动力~
+
+⭐ 如果项目对您有帮助，欢迎Star支持！这是对我们最大的鼓励~
+
+📌 项目协议：Apache-2.0 License | Copyright © 2025 DuanInnovator
+
+
+⚠️ 免责声明：
+
+本软件为开源学习项目，不鼓励任何形式的学术不端行为
+使用者应自觉遵守学校/机构的学术规范
+开发者不对因滥用本软件导致的后果负责
+请合理使用，切勿影响正常教学秩序。
