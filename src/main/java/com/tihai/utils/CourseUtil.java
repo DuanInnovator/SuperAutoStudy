@@ -744,13 +744,13 @@ public class CourseUtil {
             List<String> options = multiCut(q.getOptions());
             q.setTKOptions(options);
             String res = query.queryAnswerSync(q);
-            String answer = ""; //最终答案
+            StringBuilder answer = new StringBuilder(); //最终答案
 
             if (res == null || res.isEmpty()) {
                 if (questionType.equals("judgement")) {
-                    answer = "true";  //对于判断题来说,如果题库无答案，则默认选对
+                    answer = new StringBuilder("true");  //对于判断题来说,如果题库无答案，则默认选对
                 } else {
-                    answer = randomAnswer(options); //其他题型默认随机选
+                    answer = new StringBuilder(randomAnswer(options)); //其他题型默认随机选
                 }
             } else {
                 switch (questionType) {
@@ -758,25 +758,33 @@ public class CourseUtil {
                     case "single":
                         for (String option : options) {
                             if (option.contains(res)) {
-                                answer = option.substring(0, 1);
+                                answer = new StringBuilder(option.substring(0, 1));
                                 break;
                             }
                         }
                         break;
                     case "multiple":
-                        answer = res;
+                        String[] resArr = res.split("#");
+                        for(String re : resArr){
+                            for (String option : options) {
+                                if (option.contains(re)) {
+                                    answer.append(option.charAt(0));
+                                    break;
+                                }
+                            }
+                        }
 
-                        answer = answer.chars()
+                        answer = new StringBuilder(answer.chars()
                                 .sorted()
                                 .mapToObj(c -> String.valueOf((char) c))
-                                .collect(Collectors.joining());
+                                .collect(Collectors.joining()));
                         break;
 
                     case "judgement":
                         if (res.equals("正确")) {
-                            answer = "true";
+                            answer = new StringBuilder("true");
                         } else {
-                            answer = "false";
+                            answer = new StringBuilder("false");
                         }
                     default:
                 }
@@ -784,7 +792,7 @@ public class CourseUtil {
             }
 
             AnswerField<String> answerField = q.getAnswerField();
-            answerField.setAnswerValue(answer);
+            answerField.setAnswerValue(answer.toString());
 
         }
 
