@@ -19,6 +19,6 @@ public interface CourseService {
      * 获取课程列表
      * @param dto 用户登录信息
      */
-    List<Course> getCourseList(WKUserDTO dto,boolean isUpdate) throws IOException;
+    List<Course> getCourseList(WKUserDTO dto) throws IOException;
 }
 
