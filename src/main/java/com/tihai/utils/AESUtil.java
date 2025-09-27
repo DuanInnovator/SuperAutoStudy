@@ -18,13 +18,13 @@ import java.util.Base64;
 
 @Component
 @SuppressWarnings("all")
-public class AESCipher {
+public class AESUtil {
     private final byte[] key;
     private final byte[] iv;
 
 
 
-    public AESCipher(GlobalProperties globalProperties) {
+    public AESUtil(GlobalProperties globalProperties) {
         // 确保与 Python 代码相同的密钥生成逻辑
         this.key = globalProperties.getAesKey().getBytes(StandardCharsets.UTF_8);
         this.iv =  globalProperties.getAesKey().getBytes(StandardCharsets.UTF_8);
