@@ -1,5 +1,7 @@
 package com.tihai.exception;
 
+import java.io.Serializable;
+
 /**
  * @Copyright : DuanInnovator
  * @Description : 业务异常
@@ -7,7 +9,7 @@ package com.tihai.exception;
  * @CreateTime : 2025/4/26
  * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
  **/
-public class BusinessException extends RuntimeException {
+public class BusinessException extends RuntimeException implements Serializable {
     private Integer code;
     private Object data;
 
