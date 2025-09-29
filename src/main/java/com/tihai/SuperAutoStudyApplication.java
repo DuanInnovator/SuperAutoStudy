@@ -21,16 +21,16 @@ import java.net.UnknownHostException;
  * @CreateTime : 2025/2/28
  * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
-@SpringBootApplication()
+@SpringBootApplication
 @EnableConfigurationProperties
 @EnableDubbo
 @EnableDiscoveryClient
 @MapperScan("com.tihai.mapper")
 @EnableScheduling
 @Slf4j
-public class SuperAutoApplication {
+public class SuperAutoStudyApplication {
     public static void main(String[] args) throws UnknownHostException {
-        SpringApplication app = new SpringApplicationBuilder(SuperAutoApplication.class).build(args);
+        SpringApplication app = new SpringApplicationBuilder(SuperAutoStudyApplication.class).build(args);
         Environment env = app.run(args).getEnvironment();
         String protocol = "http";
         if (env.getProperty("server.ssl.key-store") != null) {
@@ -52,10 +52,10 @@ public class SuperAutoApplication {
         log.info("\n" +
                         "---------------------------------------------------------------------------------------\n" +
                         "  🚀  {}Application '{}' is running!{}\n\n" +
-                        "  🔗  {}Local:      {}://localhost:{}\n" +
+                        "  🔗  {}Local(地址):      {}://localhost:{}\n" +
                         "  🌐  {}External:   {}://{}:{}\n" +
-                        "  📦  {}Profile(s): {}\n" +
-                        "  📚  {}Study Speed: {}\n" +
+                        "  📦  {}Profile(配置文件): {}\n" +
+                        "  📚  {}Study Speed(刷课速度): {}\n" +
                         "---------------------------------------------------------------------------------------\n",
                 GREEN, appName, RESET,
                 CYAN, protocol, port,
