@@ -14,7 +14,7 @@ import java.util.Map;
  * @Link : <a href="https://github.com/DuanInnovator/SuperAutoStudy">...</a>
  **/
 @SuppressWarnings("all")
-public class TTFFileParser {
+public class TTFFileParserUtil {
     private final Map<String, String> charMap = new HashMap<>();
 
     public void parse(InputStream fontStream) throws IOException {
