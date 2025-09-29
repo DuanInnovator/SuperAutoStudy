@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
+import java.util.concurrent.*;
 
 /**
  * @Copyright : DuanInnovator
@@ -28,9 +26,11 @@ public class FreeThreadPoolConfig {
     public ThreadPoolExecutor customThreadPool(ThreadPoolProperties config) {
 
 
-        log.error("当前核心线程数为:{}", config.getCoreSize());
-        // 创建优先级阻塞队列
-        BlockingQueue<Runnable> queue = new PriorityBlockingQueue<>(config.getQueueCapacity());
+        log.info("当前核心线程数为:{}", config.getCoreSize());
+        log.info("当前最大线程数为:{}", config.getMaxSize());
+        log.info("当前队列容量:{}", config.getQueueCapacity());
+
+        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(config.getQueueCapacity());
 
         // 构建线程池
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
@@ -43,9 +43,8 @@ public class FreeThreadPoolConfig {
                 new PriorityRejectPolicy()
         );
 
-        // 允许核心线程超时
-        executor.allowCoreThreadTimeOut(config.isAllowCoreThreadTimeout());
-
+        executor.allowCoreThreadTimeOut(config.isAllowCoreThreadTimeout());// 允许核心线程超时
+        executor.prestartAllCoreThreads(); // 预热核心线程
         return executor;
     }
 
