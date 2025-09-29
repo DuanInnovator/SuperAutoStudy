@@ -2,6 +2,10 @@ package com.tihai.service.superstar;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tihai.domain.chaoxing.WkUser;
+import okhttp3.CookieJar;
+import okhttp3.OkHttpClient;
+
+import java.util.Map;
 
 /**
  * @Copyright : DuanInnovator
@@ -15,10 +19,18 @@ public interface SuperStarLoginService extends IService<WkUser> {
 
     /**
      * 超星登录
+     *
      * @param wkUser 用户信息
      */
-    String login(WkUser wkUser,boolean isUpdate);
+    CookieJar login(WkUser wkUser);
 
+
+    /**
+     * 获取登录信息
+     *
+     * @return
+     */
+    Map<String, Object> getLoginInfo(OkHttpClient okHttpClient);
 
 
 }
