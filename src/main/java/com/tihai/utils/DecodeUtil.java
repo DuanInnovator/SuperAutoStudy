@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @CreateTime : 2025/2/26
  * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
-public class Decode {
+public class DecodeUtil {
     /**
      * 解码课程列表
      */
@@ -134,7 +134,6 @@ public class Decode {
      * 返回 Pair(任务点列表, 任务附加信息)
      */
     public static Pair<List<Job>, JobInfo> decodeCourseCard(String html) {
-//        LoggerUtil.logger.trace("开始解码任务点列表...");
         JobInfo jobInfo = new JobInfo();
         List<Job> jobList = new ArrayList<>();
 
@@ -207,7 +206,6 @@ public class Decode {
                     }
                     job.setOtherInfo(card.optString("otherInfo"));
                     if (!card.has("mid")) {
-//                        LoggerUtil.logger.error("出现转码失败视频，已跳过...");
                         continue;
                     }
                     job.setMid(card.optString("mid"));
