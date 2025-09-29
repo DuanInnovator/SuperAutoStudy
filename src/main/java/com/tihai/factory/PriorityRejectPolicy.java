@@ -19,7 +19,7 @@ public class PriorityRejectPolicy implements RejectedExecutionHandler {
         if (r instanceof PriorityTaskWrapper) {
             PriorityTaskWrapper task = (PriorityTaskWrapper) r;
             if(task.getPriority()>=1){
-                task.decreasePriority(1); // 优先级降级
+                task.setPriority(task.getPriority()-1);
             }
             executor.execute(task);   // 重新入队
         }
