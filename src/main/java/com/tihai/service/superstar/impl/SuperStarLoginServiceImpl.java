@@ -1,29 +1,27 @@
 package com.tihai.service.superstar.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tihai.config.OkHttpClientInit;
 import com.tihai.constant.GlobalConstant;
 import com.tihai.domain.chaoxing.SuperStarLog;
 import com.tihai.domain.chaoxing.WkUser;
+import com.tihai.manager.GlobalCookieManager;
 import com.tihai.mapper.SuperStarUserMapper;
 import com.tihai.service.superstar.SuperStarLogService;
 import com.tihai.service.superstar.SuperStarLoginService;
-import com.tihai.service.superstar.SuperStarUserService;
-import com.tihai.utils.AESCipher;
+import com.tihai.utils.AESUtil;
 import com.tihai.utils.JsonParser;
 import ma.glasnost.orika.MapperFacade;
 import okhttp3.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
+import static com.tihai.common.BaseUrl.API_SSO_LOGIN;
+import static com.tihai.common.BaseUrl.LOGIN_URL;
 
 /**
  * @Copyright : DuanInnovator
@@ -37,55 +35,29 @@ import java.util.stream.Collectors;
 public class SuperStarLoginServiceImpl extends ServiceImpl<SuperStarUserMapper, WkUser> implements SuperStarLoginService {
 
     @Autowired
-    private AESCipher cipher;
+    private AESUtil cipher;
 
     @Autowired
     private SuperStarLogService superStarLogService;
 
     @Autowired
-    private SuperStarUserService userService;
-    @Autowired
     private MapperFacade mapperFacade;
 
-    @Autowired
-    private ThreadPoolExecutor threadPoolExecutor;
 
     /**
      * 超星登录
      *
      * @param wkUser 用户信息
-     * @param isUpdate 是否更新用户信息  false->不执行重新登录请求  true->cookies已过期,执行重新登录请求
      */
     @Override
-    public String login(WkUser wkUser,boolean isUpdate) {
+    public CookieJar login(WkUser wkUser) {
 
-        WkUser userByAccount = userService.getUserByAccount(wkUser.getAccount());
-        if(!isUpdate && userByAccount!=null && StringUtils.hasLength(userByAccount.getCookies()) && wkUser.getCookies()!=null){
-            return userByAccount.getCookies();
-        }
+
+        GlobalCookieManager.setCurrentAccount(wkUser.getAccount());
+        OkHttpClient client = OkHttpClientInit.getClient(wkUser.getAccount(), false, false);
+
         SuperStarLog startLog = mapperFacade.map(wkUser, SuperStarLog.class);
 
-        CookieJar cookieJar = new CookieJar() {
-            private final Map<String, List<Cookie>> cookieStore = new HashMap<>();
-
-            @Override
-            public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                cookieStore.put(url.host(), cookies);
-            }
-
-            @Override
-            public List<Cookie> loadForRequest(HttpUrl url) {
-                List<Cookie> cookies = cookieStore.get(url.host());
-                return cookies != null ? cookies : new ArrayList<>();
-            }
-        };
-
-        // 初始化 OkHttpClient 并设置 CookieJar
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
-
-        String url = "https://passport2.chaoxing.com/fanyalogin";
 
         FormBody formBody = new FormBody.Builder()
                 .add("fid", "-1")
@@ -100,36 +72,20 @@ public class SuperStarLoginServiceImpl extends ServiceImpl<SuperStarUserMapper, 
                 .build();
 
         Request request = new Request.Builder()
-                .url(url)
+                .url(LOGIN_URL)
                 .post(formBody)
                 .build();
         try (Response response = client.newCall(request).execute()) {
             String body = response.body().string();
-            Map<String, Object> result = JsonParser.parse(body); // 解析 JSON 响应
+            Map<String, Object> result = JsonParser.parse(body);
             Map<String, Object> ret = new HashMap<>();
 
             if (result != null && Boolean.TRUE.equals(result.get("status"))) {
-                List<Cookie> cookies = cookieJar.loadForRequest(HttpUrl.parse(url));
-                String cookieStr = cookies.stream()
-                        .map(Cookie::toString)
-                        .collect(Collectors.joining(", "));
-
-                CompletableFuture.runAsync(() -> {
-                    if (userByAccount != null) {
-                        userByAccount.setCookies(cookieStr);
-                        this.baseMapper.updateById(userByAccount);
-                    } else {
-                        wkUser.setCookies(cookieStr);
-                        this.save(wkUser);
-                    }
-                    startLog.setRemark(GlobalConstant.LOGIN_SUCCESS);
-                }, threadPoolExecutor);
-
-                return cookieStr;
-
+                return OkHttpClientInit.getCookieJar(wkUser.getAccount());
 
             } else {
                 startLog.setRemark(result.get("msg2") != null ? result.get("msg2").toString() : GlobalConstant.LOGIN_FAIL);
+                return null;
             }
 
         } catch (IOException e) {
@@ -140,6 +96,52 @@ public class SuperStarLoginServiceImpl extends ServiceImpl<SuperStarUserMapper, 
         return null;
     }
 
+
+    /**
+     * 获取登录信息
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Object> getLoginInfo(OkHttpClient okHttpClient) {
+        try {
+
+            HttpUrl url = HttpUrl.parse(API_SSO_LOGIN).newBuilder().build();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build();
+
+            try (Response response = okHttpClient.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+
+                String responseBody = response.body().string();
+                JSONObject jsonContent = new JSONObject(responseBody);
+
+                // 检查返回结果
+                if (jsonContent.optInt("result") == 0) {
+                    return null;
+                }
+
+                // 提取登录信息
+                JSONObject msg = jsonContent.getJSONObject("msg");
+                Map<String, Object> loginAcc = new HashMap<>();
+                loginAcc.put("puid", msg.getInt("puid"));
+                loginAcc.put("name", msg.getString("name"));
+                loginAcc.put("sex", msg.getInt("sex"));
+                loginAcc.put("phone", msg.getString("phone"));
+                loginAcc.put("schoolname", msg.getString("schoolname"));
+                loginAcc.put("uname", msg.optString("uname")); // 使用optString处理可能不存在的字段
+
+                return loginAcc;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
 
