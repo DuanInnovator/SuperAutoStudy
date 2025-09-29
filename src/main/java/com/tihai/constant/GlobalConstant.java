@@ -20,5 +20,7 @@ public class GlobalConstant {
 
     public static final String  COURSE_INFO_GET_FAIL = "获取课程信息失败";
     public static final String COURSE_ID_NOT_NULL= "课程id不能为空";
+
+    public static final String TASK_RETRY_MAX_COUNT = "任务重试次数达到最大值,请手动检查";
 }
 
