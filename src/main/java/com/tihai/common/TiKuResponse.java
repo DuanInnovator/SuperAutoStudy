@@ -9,7 +9,7 @@ import java.util.List;
  * @Description :题库响应
  * @Author : DuanInnovator
  * @CreateTime : 2025/4/24
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Data
 public class TiKuResponse {

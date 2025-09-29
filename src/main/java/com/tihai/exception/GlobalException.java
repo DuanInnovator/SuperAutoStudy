@@ -20,7 +20,7 @@ import java.util.Map;
  * @Description : 全局异常处理
  * @Author : DuanInnovator
  * @CreateTime : 2025/2/24
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @RestControllerAdvice
 @Slf4j

@@ -8,7 +8,7 @@ import java.util.Map;
  * @Description :
  * @Author : DuanInnovator
  * @CreateTime : 2025/2/26
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 public class GlobalConst {
     // AES 加密密钥

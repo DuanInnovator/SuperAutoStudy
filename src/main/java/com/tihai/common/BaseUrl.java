@@ -5,7 +5,7 @@ package com.tihai.common;
  * @Description : 基本URL
  * @Author : DuanInnovator
  * @CreateTime : 2025/9/21
- * @Link : <a href="https://github.com/DuanInnovator/SuperTiKu">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 public class BaseUrl {
 

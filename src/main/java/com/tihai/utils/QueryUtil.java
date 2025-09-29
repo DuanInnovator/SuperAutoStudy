@@ -22,11 +22,11 @@ import java.util.Map;
  * @Description : 查题工具类
  * @Author : DuanInnovator
  * @CreateTime : 2025/4/24
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Component
 @Slf4j
-public class Query {
+public class QueryUtil {
 
     @Autowired
     private WebClient tikuWebClient;

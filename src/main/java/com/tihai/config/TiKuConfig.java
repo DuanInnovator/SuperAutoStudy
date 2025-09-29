@@ -13,7 +13,7 @@ import java.util.List;
  * @Description : 题库配置类
  * @Author : DuanInnovator
  * @CreateTime : 2025/4/24
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Data
 @Configuration
@@ -21,19 +21,24 @@ import java.util.List;
 public class TiKuConfig {
 
     private List<Endpoint> endpoints=new ArrayList<>();
-    private String baseUrl = "http://tk.xxtmooc.com/api/q";
 
     @Data
     public static class Endpoint {
+
         /**
-         * 题库名称
+         * 题库地址
          **/
-        private String name;
+        private String baseUrl;
 
         /**
          * token
          **/
         private String token;
+
+        /**
+         * 是否启用模型搜索
+         */
+        private Boolean isEnableSearch;
     }
 
 

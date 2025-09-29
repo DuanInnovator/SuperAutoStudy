@@ -14,7 +14,7 @@ import java.net.InetAddress;
  * @Description : 获取服务信息
  * @Author : DuanInnovator
  * @CreateTime : 2025/4/26
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Component
 @SuppressWarnings("all")

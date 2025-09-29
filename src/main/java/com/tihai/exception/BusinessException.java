@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @Description : 业务异常
  * @Author : DuanInnovator
  * @CreateTime : 2025/4/26
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 public class BusinessException extends RuntimeException implements Serializable {
     private Integer code;

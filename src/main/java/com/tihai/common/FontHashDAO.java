@@ -11,7 +11,7 @@ import java.util.Map;
  * @Description : 字体哈希映射
  * @Author : DuanInnovator
  * @CreateTime : 2025/2/26
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link :<a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 public class FontHashDAO {
     private Map<String, String> charMap;

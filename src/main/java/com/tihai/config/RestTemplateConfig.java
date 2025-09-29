@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
  * @Description :
  * @Author : DuanInnovator
  * @CreateTime : 2025/5/11
- * @Link : <a href="https://github.com/DuanInnovator/SuperTiKu">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Configuration
 public class RestTemplateConfig {

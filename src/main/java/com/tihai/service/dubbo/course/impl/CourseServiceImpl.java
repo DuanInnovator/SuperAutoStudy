@@ -25,7 +25,7 @@ import java.util.Map;
  * @Description : Dubbo-提供课程查询接口实现
  * @Author : DuanInnovator
  * @CreateTime : 2025/3/17
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @DubboService
 @Service

@@ -11,7 +11,7 @@ import java.util.List;
  * @Description : 公共工具类
  * @Author : DuanInnovator
  * @CreateTime : 2025/9/21
- * @Link : <a href="https://github.com/DuanInnovator/SuperTiKu">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @SuppressWarnings("all")
 public class CommonUtil {

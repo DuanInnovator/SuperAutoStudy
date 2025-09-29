@@ -11,7 +11,7 @@ import java.util.List;
  * @Description :Dubbo-提供课程查询接口
  * @Author : DuanInnovator
  * @CreateTime : 2025/3/17
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 public interface CourseService {
 

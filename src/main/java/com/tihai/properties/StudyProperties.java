@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * @Description : 学习配置
  * @Author : DuanInnovator
  * @CreateTime : 2025/4/15
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @Data
 @Configuration

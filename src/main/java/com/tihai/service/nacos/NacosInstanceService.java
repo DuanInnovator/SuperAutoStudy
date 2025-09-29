@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
  * @Description : nacos 实例服务
  * @Author : DuanInnovator
  * @CreateTime : 2025/3/25
- * @Link : <a href="https://github.com/DuanInnovator/TiHaiWuYou-Admin/tree/mine-admin">...</a>
+ * @Link : <a href="https://github.com/DuanInnovator/SuperAutotudy">...</a>
  **/
 @SuppressWarnings("all")
 @Service
