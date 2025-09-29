@@ -1,10 +1,14 @@
 package com.tihai.domain.chaoxing;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -19,16 +23,27 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("th_wk_log")
-public class SuperStarLog {
+public class SuperStarLog implements Serializable {
     /**
      * id
      */
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
+    /**
+     * 子订单号
+     */
+    private String subOrderId;
 
     /**
      * 登录账号
      */
     private String loginAccount;
+
+    /**
+     * 课程id
+     */
+    private String courseId;
 
     /**
      * 课程名称
@@ -68,11 +83,13 @@ public class SuperStarLog {
     /**
      * 任务开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     /**
      * 任务结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
 
     /**
@@ -84,5 +101,10 @@ public class SuperStarLog {
      * 机器码
      */
     private String machineNum;
+
+    /**
+     * 是否删除
+     */
+    private Integer isDelete;
 }
 
