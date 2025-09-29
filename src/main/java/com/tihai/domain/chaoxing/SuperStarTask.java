@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -19,17 +21,20 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("th_wk_queue")
+@TableName("th_order_wk")
+@NoArgsConstructor
 public class SuperStarTask {
 
     /**
-     * 订单id
+     * 订单ID
      */
-    @TableId(value = "id")
-    private String id;
+    private String orderId;
+
+    @TableId(value = "sub_order_id")
+    private String subOrderId;
 
     /**
-     * 账号
+     * 登录账
      */
     private String loginAccount;
 
@@ -39,9 +44,9 @@ public class SuperStarTask {
     private String password;
 
     /**
-     * 课程名称
+     * 学校名称
      */
-    private String courseName;
+    private String schoolName;
 
     /**
      * 课程id
@@ -49,14 +54,49 @@ public class SuperStarTask {
     private String courseId;
 
     /**
-     * 优先级 设定1-10,1为最高优先级
+     * 课程名称
+     */
+    private String courseName;
+
+    /**
+     * 总价格
+     */
+    private BigDecimal totalPrice;
+
+    /**
+     * 优先级
      */
     private Integer priority;
 
+//    /**
+//     * 平台ID
+//     */
+//    private Long platform;
+
     /**
-     * 状态
+     * 产品ID
+     */
+    private Long productId;
+
+    /**
+     * 产品名称
+     */
+    private String productName;
+
+    /**
+     * 订单参考进度
+     */
+    private BigDecimal process;
+
+    /**
+     * 订单状态
      */
     private Integer status;
+
+    /**
+     * 得分
+     */
+    private BigDecimal score;
 
     /**
      * 重试次数
@@ -64,14 +104,21 @@ public class SuperStarTask {
     private Integer retryCount;
 
     /**
-     * 创建时间
-     */
-    private LocalDateTime creatTime;
-
-    /**
-     * 机器码
+     * 机器编号
      */
     private String machineNum;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+
+    public SuperStarTask(String orderId, Integer status) {
+        this.orderId = orderId;
+        this.status = status;
+    }
+
 
 }
 
