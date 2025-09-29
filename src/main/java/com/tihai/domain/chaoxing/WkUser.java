@@ -54,10 +54,6 @@ public class WkUser {
      */
     private Long fid;
 
-    /**
-     * cookie信息
-     */
-    private String cookies;
 
     public WkUser(String account, String password) {
         this.account = account;
