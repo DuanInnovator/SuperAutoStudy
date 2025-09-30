@@ -86,6 +86,14 @@ docker-compose up -d
 
 ⭐ 如果项目对您有帮助，欢迎Star支持！这是对我们最大的鼓励~
 
+请作者喝奶茶
+
+
+<img width="128" height="128" alt="8994aa38df45fe244369e8d3cb5a4b3" src="https://github.com/user-attachments/assets/9028bb09-9d4d-441b-93a3-3de341bc5c14" />
+<img width="128" height="128" alt="8994aa38df45fe244369e8d3cb5a4b3" src="https://github.com/user-attachments/assets/db77485d-6345-4471-a09e-7aadd4932787" />
+
+
+
 📌 项目协议：Apache-2.0 License | Copyright © 2025 DuanInnovator
 
 
